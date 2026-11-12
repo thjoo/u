@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="de-CH"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>HK 09 Projekt 6: Aussage schärfen</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Open+Sans:wght@400;600;700&family=Inconsolata:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#FAF7F2;--ink:#2B2727;--peach:#FFC1AD;--lila:#B4AFD5;--bar:44px}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#6E6864;overflow:hidden;font-family:'Open Sans',sans-serif}
+#buehne{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+.folie{display:none;position:relative;overflow:hidden;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));container-type:size;background:#fff;color:var(--ink)}
+.folie.an{display:block}
+.lila{background:var(--lila)}.peach{background:var(--peach)}
+.leiste{position:absolute;left:0;right:0;bottom:0;height:var(--bar);background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;font-family:'Inconsolata',monospace;font-size:15px;letter-spacing:.18em;text-transform:uppercase;z-index:5}
+.leiste span:last-child{position:absolute;right:20px;font-size:12px;letter-spacing:.08em;opacity:.6}
+.mitte{position:absolute;inset:0 0 var(--bar) 0;display:flex;align-items:center;justify-content:center;padding:0 12cqw;text-align:center}
+.titel{font-family:'Montserrat',sans-serif;font-weight:800;font-size:9cqh;line-height:1.1}
+.satz{font-family:'Open Sans',sans-serif;font-weight:700;font-size:5.2cqh;line-height:1.35;max-width:22em}
+.seite{position:absolute;left:5%;width:55%;top:9%;bottom:var(--bar);overflow:hidden;background:#fff;box-shadow:0 2px 14px rgba(0,0,0,.14);border:1px solid #e6e3df;border-bottom:0}
+.seite img{width:100%;display:block}
+.sanft .folie.an .seite{animation:einblenden 1.4s cubic-bezier(.22,1,.36,1) both,schweben2 7s ease-in-out 1.4s infinite alternate}
+@keyframes einblenden{from{opacity:0;transform:translate(var(--dx,0),var(--dy,0))}to{opacity:1;transform:none}}
+@keyframes schweben2{from{transform:none}to{transform:translate(var(--sx,0),var(--sy,0))}}
+.hoch .folie.an .seite{animation:rein 1.8s cubic-bezier(.12,.9,.18,1) both,schweben 9s ease-in-out 1.8s infinite alternate}
+@keyframes rein{from{transform:translateY(55cqh)}to{transform:none}}
+@keyframes schweben{from{transform:none}to{transform:translateY(-4px)}}
+.rechts{position:absolute;left:65%;right:5%;top:0;bottom:var(--bar);display:flex;flex-direction:column;justify-content:center}
+h2{font-family:'Montserrat',sans-serif;font-weight:800;font-size:4cqh}
+.dauer{font-family:'Inconsolata',monospace;font-size:2.1cqh;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin:1.6cqh 0 4cqh}
+.rechts.nurtext h2{font-size:6cqh}.rechts.nurtext .dauer{font-size:2.6cqh}.rechts.nurtext p{font-size:4cqh}
+.rechts p{font-size:2.25cqh;line-height:1.5}
+.ks{position:absolute;top:3.5%;bottom:calc(var(--bar) + 3.5%);left:50%;transform:translateX(-50%);aspect-ratio:1600/1132;max-width:94%}
+.ks img{position:absolute;inset:0;width:100%;height:100%;display:block}
+.ks-blatt{position:absolute;inset:0;transform:translateX(120%);background:rgba(255,255,255,.3);outline:1px solid rgba(43,39,39,.3);box-shadow:0 6px 18px rgba(0,0,0,.14)}
+.folie.an .ks-blatt{animation:reinsliden 3.2s cubic-bezier(.25,.8,.3,1) .8s forwards,ablegen .6s ease 4s forwards}
+@keyframes reinsliden{from{transform:translateX(120%)}to{transform:translateX(0)}}
+@keyframes ablegen{to{background:rgba(255,255,255,0);outline-color:transparent;box-shadow:none}}
+.seite.medien{bottom:auto;aspect-ratio:16/9;top:50%;translate:0 -60%;border-bottom:1px solid #e6e3df;background:#000}
+.seite.medien video,.seite.medien img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.vorschau img{opacity:0;animation:vorschau var(--dauer) linear infinite}
+@keyframes vorschau{0%{opacity:0;transform:scale(1)}4%{opacity:1}25%{opacity:1}29%{opacity:0;transform:scale(1.06)}100%{opacity:0}}
+.link{display:inline-block;align-self:flex-start;font-family:'Inconsolata',monospace;font-size:3cqh;letter-spacing:.06em;color:var(--ink);text-decoration:none;border-bottom:2px solid var(--ink);margin:1.6cqh 0 4cqh}
+.link:hover{opacity:.6}
+.vtitel{font-weight:600}
+.rechts p.klein{font-size:2.6cqh;opacity:.6;margin-top:.8cqh}
+html,body{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.folie.beschrieben .seite{animation-play-state:running,paused}
+#tafel{position:fixed;left:0;top:0;width:100%;height:100%;z-index:20;pointer-events:none}
+#werkzeug{position:fixed;top:10px;right:10px;z-index:30;display:flex;gap:6px;align-items:center;padding:6px 8px;border-radius:24px;background:rgba(43,39,39,.82);opacity:.45;transition:opacity .2s}
+#werkzeug:hover,#werkzeug.aktiv{opacity:1}
+#werkzeug button{appearance:none;border:0;cursor:pointer;width:34px;height:34px;border-radius:50%;background:transparent;color:#FAF7F2;font:600 17px/34px 'Open Sans',sans-serif;display:flex;align-items:center;justify-content:center}
+#werkzeug button.an{background:rgba(250,247,242,.22)}
+#werkzeug .farbe span{width:18px;height:18px;border-radius:50%;display:block;border:2px solid rgba(250,247,242,.6)}
+#werkzeug .farbe.an span{border-color:#FAF7F2;box-shadow:0 0 0 2px rgba(250,247,242,.35)}
+#werkzeug .trenn{width:1px;height:22px;background:rgba(250,247,242,.3)}
+#fort{position:fixed;left:0;bottom:0;height:3px;background:var(--peach);transition:.2s;z-index:9}
+</style></head><body class="sanft"><div id="buehne">
+<section class="folie an"><div class="mitte"><h1 class="titel">Aussage schärfen: Titel und Legende</h1></div><div class="leiste"><span>Demografie · Projekt</span><span>01 / 08</span></div></section>
+<section class="folie"><div class="rechts nurtext" style="left:12%;right:12%"><h2>Auftrag</h2><div class="dauer">10 min</div><p style="max-width:28em">«Bevölkerungsentwicklung Japan 1960 bis 2025» oder «Japan schrumpft seit 2011 Jahr für Jahr». Was ist der Unterschied?</p></div><div class="leiste"><span>Demografie · Projekt</span><span>02 / 08</span></div></section>
+<section class="folie lila"><div class="mitte"><p class="satz">Der Titel sagt die Aussage, nicht das Thema. Könnte jemand deinen Titel mit deiner eigenen Grafik widerlegen?</p></div><div class="leiste"><span>Demografie · Projekt</span><span>03 / 08</span></div></section>
+<section class="folie"><div class="rechts nurtext" style="left:12%;right:12%"><h2>Auftrag</h2><div class="dauer">7 min</div><p style="max-width:28em">In welcher Phase der demografischen Transformation steht dein Land? Ein Satz, begründet mit deinen eigenen Daten.</p></div><div class="leiste"><span>Demografie · Projekt</span><span>04 / 08</span></div></section>
+<section class="folie"><div class="rechts nurtext" style="left:12%;right:12%"><h2>Auftrag</h2><div class="dauer">10 min</div><p style="max-width:28em">Schreib drei Titelvarianten für deine Grafik und wähle eine aus.</p></div><div class="leiste"><span>Demografie · Projekt</span><span>05 / 08</span></div></section>
+<section class="folie"><div class="rechts nurtext" style="left:12%;right:12%"><h2>Auftrag</h2><div class="dauer">10 min</div><p style="max-width:28em">Schreib die Legende mit den vier Pflichtangaben: Bedeutung jedes Elements, Einheit, Auswahlkriterium, Quelle mit Abrufdatum.</p></div><div class="leiste"><span>Demografie · Projekt</span><span>06 / 08</span></div></section>
+<section class="folie"><div class="rechts nurtext" style="left:12%;right:12%"><h2>Auftrag</h2><div class="dauer">5 min</div><p style="max-width:28em">Zu zweit: Deine Nachbarin liest nur deinen Titel und sagt, was sie erwartet. Dann zeigst du die Grafik. Passt es?</p></div><div class="leiste"><span>Demografie · Projekt</span><span>07 / 08</span></div></section>
+<section class="folie peach"><div class="mitte"><p class="satz">Nächste Woche gibt es Peer-Feedback nach Raster, danach überarbeitest du.</p></div><div class="leiste"><span>Demografie · Projekt</span><span>08 / 08</span></div></section>
+</div><canvas id="tafel"></canvas><div id="werkzeug"><button data-a="home" title="Zur Lektionsübersicht">⌂</button><span class="trenn heim"></span><button data-a="zurueck" title="Zurück">‹</button><button data-a="weiter" title="Weiter">›</button><span class="trenn"></span><button data-a="stift" title="Stift für Finger und Maus (P). Der Apple Pencil schreibt immer.">✎</button><button class="farbe an" data-f="rot" title="Rot"><span style="background:#C0392B"></span></button><button class="farbe" data-f="blau" title="Blau"><span style="background:#4A6488"></span></button><button class="farbe" data-f="schwarz" title="Schwarz"><span style="background:#2B2727"></span></button><button class="farbe" data-f="marker" title="Leuchtmarker"><span style="background:rgba(255,212,0,.6)"></span></button><button data-a="radierer" title="Radierer: ganze Striche entfernen">⌫</button><button data-a="rueck" title="Rückgängig (Z)">↶</button><button data-a="loeschen" title="Alles auf dieser Folie löschen (C)">✕</button><button data-a="alle" title="Notizen auf allen Folien löschen"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v5.5M14 11v5.5"/></svg></button><span class="trenn"></span><button data-a="vollbild" title="Vollbild (F)">⛶</button></div><div id="fort"></div>
+<script>
+const f=[...document.querySelectorAll('.folie')];let i=0,busy=false;const HOCH=document.body.classList.contains('hoch');
+const RICHT=[[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]];
+function neu(el){el.style.animation='none';el.offsetHeight;el.style.animation=''}
+function zeig(n){i=Math.max(0,Math.min(f.length-1,n));f.forEach((s,k)=>s.classList.toggle('an',k===i));if(typeof malen==='function')malen();
+ const s=f[i];const p=s.querySelector('.seite');if(p){const r=RICHT[Math.floor(Math.random()*8)],w=Math.random()*Math.PI*2;p.style.setProperty('--dx',r[0]*12+'px');p.style.setProperty('--dy',r[1]*10+'px');p.style.setProperty('--sx',(Math.cos(w)*5).toFixed(1)+'px');p.style.setProperty('--sy',(Math.sin(w)*3).toFixed(1)+'px');p.getAnimations().forEach(a=>{if(a.id==='raus')a.cancel()});neu(p)}const b=s.querySelector('.ks-blatt');if(b)neu(b);
+ document.getElementById('fort').style.width=((i+1)/f.length*100)+'%'}
+function geh(n){n=Math.max(0,Math.min(f.length-1,n));if(busy||n===i)return;if(typeof X!=='undefined')X.clearRect(0,0,CB.width,CB.height);const cur=f[i];
+ const p=HOCH&&cur.querySelector('.seite');if(p){busy=true;const r=p.getBoundingClientRect();p.style.animation='none';const a=p.animate([{transform:'translateY(0)'},{transform:'translateY('+(-(r.bottom+30))+'px)'}],{duration:550,easing:'cubic-bezier(.7,0,.84,0)',fill:'forwards'});a.id='raus';a.onfinish=()=>{busy=false;zeig(n)}}else zeig(n)}
+document.addEventListener('keydown',e=>{
+ if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){geh(i+1);e.preventDefault()}
+ if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){geh(i-1);e.preventDefault()}
+ if(e.key==='r'){const b=f[i].querySelector('.ks-blatt');if(b)neu(b)}});
+
+// Stift: Apple Pencil schreibt immer, Finger und Maus blättern (ausser im Stift-Modus).
+// Tippen im linken Viertel = zurück, sonst weiter. Tasten: P Stift, Z rückgängig, C Folie löschen.
+const C=document.getElementById('tafel'),X=C.getContext('2d'),WZ=document.getElementById('werkzeug');
+const FARBEN={rot:{c:'#C0392B'},blau:{c:'#4A6488'},schwarz:{c:'#2B2727'},marker:{c:'#FFD400',a:.38,m:1}};
+let modus=false,rad=false,farbe=FARBEN.rot,zug=null,penZeit=0;
+const KEY='tafel:'+document.title;let S={};
+try{S=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){S={}}
+function speichern(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+let CB={left:0,top:0,width:1,height:1};
+function rahmen(){const r=f[i].getBoundingClientRect();return{left:r.left-CB.left,top:r.top-CB.top,width:r.width,height:r.height}}
+function abs(q,r){return[r.left+q[0]*r.width,r.top+q[1]*r.height,q[2]*r.width]}
+function segment(z,a,b,r){const A=abs(a,r),B=abs(b,r);X.globalAlpha=z.a||1;X.strokeStyle=z.c;X.lineWidth=B[2];
+ X.lineCap=X.lineJoin='round';X.beginPath();X.moveTo(A[0],A[1]);X.lineTo(B[0],B[1]);X.stroke();X.globalAlpha=1}
+function strich(z,r){const p=z.p;if(p.length===1){segment(z,p[0],p[0],r);return}
+ if(z.m){X.globalAlpha=z.a;X.strokeStyle=z.c;X.lineWidth=abs(p[0],r)[2];X.lineCap=X.lineJoin='round';X.beginPath();
+  p.forEach((q,k)=>{const A=abs(q,r);k?X.lineTo(A[0],A[1]):X.moveTo(A[0],A[1])});X.stroke();X.globalAlpha=1;return}
+ for(let k=1;k<p.length;k++)segment(z,p[k-1],p[k],r)}
+function malen(){X.clearRect(0,0,CB.width,CB.height);f[i].classList.toggle('beschrieben',!!(S[i]||[]).length);
+ const r=rahmen();(S[i]||[]).forEach(z=>strich(z,r))}
+function groesse(){const d=devicePixelRatio||1;CB=C.getBoundingClientRect();C.width=Math.round(CB.width*d);C.height=Math.round(CB.height*d);
+ X.setTransform(C.width/CB.width,0,0,C.height/CB.height,0,0);malen()}
+function punkt(e){const r=f[i].getBoundingClientRect(),pr=e.pointerType==='pen'?(e.pressure||.5):.5;
+ return[(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height,farbe.m?.016:.0012+.0032*pr]}
+function radieren(q){const vor=(S[i]||[]).length;
+ S[i]=(S[i]||[]).filter(z=>!z.p.some(p=>Math.hypot(p[0]-q[0],(p[1]-q[1])*9/16)<.014));if(S[i].length!==vor)malen()}
+document.addEventListener('pointerdown',e=>{if(e.target.closest('#werkzeug,a')||busy)return;
+ const pen=e.pointerType==='pen';if(!pen&&!modus)return;e.preventDefault();if(pen)penZeit=Date.now();
+ const q=punkt(e);if(rad){zug={rad:1};radieren(q);return}
+ zug={c:farbe.c,a:farbe.a,m:farbe.m,p:[q]};(S[i]=S[i]||[]).push(zug);
+ if(!zug.m)segment(zug,q,q,rahmen())},{passive:false});
+document.addEventListener('pointermove',e=>{if(!zug)return;e.preventDefault();
+ const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e],r=rahmen();
+ (evs.length?evs:[e]).forEach(ev=>{const q=punkt(ev);if(zug.rad){radieren(q);return}
+  const v=zug.p[zug.p.length-1];zug.p.push(q);if(!zug.m)segment(zug,v,q,r)});if(zug.m)malen()},{passive:false});
+function ende(e){if(e.pointerType==='pen')penZeit=Date.now();if(zug){zug=null;speichern()}}
+document.addEventListener('pointerup',ende);document.addEventListener('pointercancel',ende);
+function stiftModus(an){modus=an;WZ.querySelector('[data-a=stift]').classList.toggle('an',an);WZ.classList.toggle('aktiv',an)}
+function waehle(btn){WZ.querySelectorAll('.farbe,[data-a=radierer]').forEach(b=>b.classList.remove('an'));btn.classList.add('an')}
+function rueckgaengig(){if((S[i]||[]).length){S[i].pop();speichern();malen()}}
+function loeschen(){if((S[i]||[]).length){S[i]=[];speichern();malen()}}
+function alleLoeschen(){if(!Object.values(S).some(z=>z&&z.length))return;
+ if(!confirm('Notizen auf allen Folien löschen?'))return;S={};speichern();malen()}
+const DE=document.documentElement,VB=DE.requestFullscreen||DE.webkitRequestFullscreen;
+function imVollbild(){return document.fullscreenElement||document.webkitFullscreenElement}
+function vollbild(){try{if(imVollbild()){(document.exitFullscreen||document.webkitExitFullscreen).call(document)}else if(VB){const r=VB.call(DE);if(r&&r.catch)r.catch(()=>{})}}catch(e){}}
+if(!VB||navigator.standalone)WZ.querySelector('[data-a=vollbild]').style.display='none';
+// Übersicht gibt es nur auf der Website (GitHub Pages), nicht lokal oder im Claude-Artifact
+if(!/github\.io$/.test(location.hostname))WZ.querySelectorAll('[data-a=home],.heim').forEach(b=>b.style.display='none');
+WZ.addEventListener('click',e=>{e.stopPropagation();const b=e.target.closest('button');if(!b)return;const a=b.dataset.a;
+ if(b.dataset.f){farbe=FARBEN[b.dataset.f];rad=false;waehle(b)}
+ else if(a==='stift')stiftModus(!modus);
+ else if(a==='radierer'){rad=true;waehle(b)}
+ else if(a==='rueck')rueckgaengig();
+ else if(a==='loeschen')loeschen();
+ else if(a==='alle')alleLoeschen();
+ else if(a==='home')location.href='./';
+ else if(a==='vollbild')vollbild();
+ else if(a==='zurueck')geh(i-1);
+ else if(a==='weiter')geh(i+1)});
+document.addEventListener('keydown',e=>{const k=e.key.toLowerCase();
+ if(k==='p')stiftModus(!modus);if(k==='z')rueckgaengig();if(k==='c')loeschen();if(k==='f')vollbild()});
+['fullscreenchange','webkitfullscreenchange'].forEach(ev=>document.addEventListener(ev,()=>setTimeout(groesse,120)));
+document.addEventListener('click',e=>{if(e.target.closest('a,#werkzeug'))return;
+ if(modus||Date.now()-penZeit<700)return;geh(e.clientX<innerWidth*.25?i-1:i+1)});
+addEventListener('resize',groesse);if(window.visualViewport)visualViewport.addEventListener('resize',groesse);
+if(window.ResizeObserver)new ResizeObserver(groesse).observe(C);
+groesse();zeig(0);
+</script></body></html>

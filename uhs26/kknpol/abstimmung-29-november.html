@@ -10,8 +10,10 @@ html,body{height:100%;background:#6E6864;overflow:hidden;font-family:'Open Sans'
 .folie{display:none;position:relative;overflow:hidden;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));container-type:size;background:#fff;color:var(--ink)}
 .folie.an{display:block}
 .lila{background:var(--lila)}.peach{background:var(--peach)}
-/* 12.11.2026, Variante C: Leitfrage und Zum Mitnehmen auf #000099, Text Lila-Weiss #D9D6EE in 600 (Kontrast 10.1, reines Weiss war zu grell) */
-.folie.dunkel{background:#000099;color:#D9D6EE}.folie.dunkel .satz{font-weight:600}
+/* 12.11.2026, Variante C: Leitfrage und Zum Mitnehmen auf Dunkelblau (zuerst #000099), Text Lila-Weiss #D9D6EE in 600 (Kontrast 10.1, reines Weiss war zu grell) */
+.folie.dunkel{background:#171782;color:#D9D6EE}.folie.dunkel .satz{font-weight:600}
+/* 12.11.2026: Blau etwas entsättigt (#000099 mit 70 % Sättigung) und linksbündig, Textkante wie bei Aufträgen ohne Screenshot (12 %) */
+.folie.dunkel .mitte{justify-content:flex-start;text-align:left}
 #werkzeug.dunkel [data-f=schwarz] span{background:#fff!important}#werkzeug.dunkel [data-f=blau] span{background:#9DB4E0!important}
 .leiste{position:absolute;left:0;right:0;bottom:0;height:var(--bar);background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;font-family:'Inconsolata',monospace;font-size:15px;letter-spacing:.18em;text-transform:uppercase;z-index:5}
 .leiste span:last-child{position:absolute;right:20px;font-size:12px;letter-spacing:.08em;opacity:.6}

@@ -7,8 +7,12 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#6E6864;overflow:hidden;font-family:'Open Sans',sans-serif}
 #buehne{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
-.folie{display:none;position:relative;overflow:hidden;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));container-type:size;background:#fff;color:var(--ink)}
-.folie.an{display:block}
+.folie{display:none;position:absolute;inset:0;margin:auto;overflow:hidden;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));container-type:size;background:#fff;color:var(--ink)}
+.folie.an{display:block;z-index:1}
+/* Überblendung beim Blättern (12.11.2026): alte Folie blendet über der neuen aus, 600 ms ease-in-out. Richtwerte: Vollbild-Übergänge 400 bis 500 ms (Material, NN-Guides), Präsentations-Fade bis etwa 750 ms */
+.folie.weg{display:block;z-index:3;pointer-events:none;animation:ausblenden .6s cubic-bezier(.45,0,.4,1) forwards}
+@keyframes ausblenden{from{opacity:1}to{opacity:0}}
+@media (prefers-reduced-motion:reduce){.folie.weg{animation-duration:.15s}}
 .lila{background:var(--lila)}.peach{background:var(--peach)}
 /* 12.11.2026, Variante C: Leitfrage und Zum Mitnehmen auf Dunkelblau (zuerst #000099), Text Lila-Weiss #D9D6EE in 600 (Kontrast 10.1, reines Weiss war zu grell) */
 .folie.dunkel{background:#171782;color:#D9D6EE}.folie.dunkel .satz{font-weight:600}
@@ -76,6 +80,7 @@ function zeig(n){i=Math.max(0,Math.min(f.length-1,n));f.forEach((s,k)=>s.classLi
  const s=f[i];const p=s.querySelector('.seite');if(p){const r=RICHT[Math.floor(Math.random()*8)],w=Math.random()*Math.PI*2;p.style.setProperty('--dx',r[0]*12+'px');p.style.setProperty('--dy',r[1]*10+'px');p.style.setProperty('--sx',(Math.cos(w)*5).toFixed(1)+'px');p.style.setProperty('--sy',(Math.sin(w)*3).toFixed(1)+'px');p.getAnimations().forEach(a=>{if(a.id==='raus')a.cancel()});neu(p)}const b=s.querySelector('.ks-blatt');if(b)neu(b);
  document.getElementById('fort').style.width=((i+1)/f.length*100)+'%'}
 function geh(n){n=Math.max(0,Math.min(f.length-1,n));if(busy||n===i)return;if(typeof X!=='undefined')X.clearRect(0,0,CB.width,CB.height);const cur=f[i];
+ if(!HOCH){f.forEach(s=>s.classList.remove('weg'));cur.classList.add('weg');zeig(n);clearTimeout(geh.t);geh.t=setTimeout(()=>cur.classList.remove('weg'),650);return}
  const p=HOCH&&cur.querySelector('.seite');if(p){busy=true;const r=p.getBoundingClientRect();p.style.animation='none';const a=p.animate([{transform:'translateY(0)'},{transform:'translateY('+(-(r.bottom+30))+'px)'}],{duration:550,easing:'cubic-bezier(.7,0,.84,0)',fill:'forwards'});a.id='raus';a.onfinish=()=>{busy=false;zeig(n)}}else zeig(n)}
 document.addEventListener('keydown',e=>{
  if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){geh(i+1);e.preventDefault()}

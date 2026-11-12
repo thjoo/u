@@ -10,6 +10,9 @@ html,body{height:100%;background:#6E6864;overflow:hidden;font-family:'Open Sans'
 .folie{display:none;position:relative;overflow:hidden;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));container-type:size;background:#fff;color:var(--ink)}
 .folie.an{display:block}
 .lila{background:var(--lila)}.peach{background:var(--peach)}
+/* 12.11.2026, Variante C: Leitfrage und Zum Mitnehmen auf #000099, Text Lila-Weiss #D9D6EE in 600 (Kontrast 10.1, reines Weiss war zu grell) */
+.folie.dunkel{background:#000099;color:#D9D6EE}.folie.dunkel .satz{font-weight:600}
+#werkzeug.dunkel [data-f=schwarz] span{background:#fff!important}#werkzeug.dunkel [data-f=blau] span{background:#9DB4E0!important}
 .leiste{position:absolute;left:0;right:0;bottom:0;height:var(--bar);background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;font-family:'Inconsolata',monospace;font-size:15px;letter-spacing:.18em;text-transform:uppercase;z-index:5}
 .leiste span:last-child{position:absolute;right:20px;font-size:12px;letter-spacing:.08em;opacity:.6}
 .mitte{position:absolute;inset:0 0 var(--bar) 0;display:flex;align-items:center;justify-content:center;padding:0 12cqw;text-align:center}
@@ -61,7 +64,7 @@ html,body{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-to
 <section class="folie"><div class="rechts nurtext" style="left:12%;right:12%"><h2>Auftrag</h2><div class="dauer">12 min</div><p style="max-width:28em">Öffne votenow und unter «Vote» die Vorlage. Allein beantworten: rechts wischen heisst Ja, links Nein, nach unten überspringen. Fertig? Lies unter «Info» den Text zur Vorlage.</p></div><div class="leiste"><span>Freifach Politik</span><span>05 / 08</span></div></section>
 <section class="folie"><div class="rechts nurtext" style="left:12%;right:12%"><h2>Auftrag</h2><div class="dauer">8 min</div><p style="max-width:28em">Zu zweit:<br>1. Stimmt das Ergebnis mit deiner ersten Meinung überein?<br>2. Hat dich eine Frage überrascht?<br>3. Bist du bestärkt, oder brauchst du noch Zeit zum Nachdenken?</p></div><div class="leiste"><span>Freifach Politik</span><span>06 / 08</span></div></section>
 <section class="folie"><div class="rechts nurtext" style="left:12%;right:12%"><h2>Auftrag</h2><div class="dauer">7 min</div><p style="max-width:28em">Ein Satz in der Runde zu Frage 1 oder 2. Dein App-Resultat gehört dir, du zeigst es nur, wenn du willst.</p></div><div class="leiste"><span>Freifach Politik</span><span>07 / 08</span></div></section>
-<section class="folie peach"><div class="mitte"><p class="satz">Wer abstimmen darf: Das Couvert liegt im Briefkasten. Am 30. November schauen wir, wie die Schweiz entschieden hat.</p></div><div class="leiste"><span>Freifach Politik</span><span>08 / 08</span></div></section>
+<section class="folie peach dunkel"><div class="mitte"><p class="satz">Wer abstimmen darf: Das Couvert liegt im Briefkasten. Am 30. November schauen wir, wie die Schweiz entschieden hat.</p></div><div class="leiste"><span>Freifach Politik</span><span>08 / 08</span></div></section>
 </div><canvas id="tafel"></canvas><div id="werkzeug"><button data-a="home" title="Zur Lektionsübersicht">⌂</button><span class="trenn heim"></span><button data-a="zurueck" title="Zurück">‹</button><button data-a="weiter" title="Weiter">›</button><span class="trenn"></span><button data-a="stift" title="Stift für Finger und Maus (P). Der Apple Pencil schreibt immer.">✎</button><button class="farbe an" data-f="rot" title="Rot"><span style="background:#C0392B"></span></button><button class="farbe" data-f="blau" title="Blau"><span style="background:#4A6488"></span></button><button class="farbe" data-f="schwarz" title="Schwarz"><span style="background:#2B2727"></span></button><button class="farbe" data-f="marker" title="Leuchtmarker"><span style="background:rgba(255,212,0,.6)"></span></button><button data-a="radierer" title="Radierer: ganze Striche entfernen">⌫</button><button data-a="rueck" title="Rückgängig (Z)">↶</button><button data-a="loeschen" title="Alles auf dieser Folie löschen (C)">✕</button><button data-a="alle" title="Notizen auf allen Folien löschen"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v5.5M14 11v5.5"/></svg></button><span class="trenn"></span><button data-a="vollbild" title="Vollbild (F)">⛶</button></div><div id="fort"></div>
 <script>
 const f=[...document.querySelectorAll('.folie')];let i=0,busy=false;const HOCH=document.body.classList.contains('hoch');
@@ -88,13 +91,15 @@ function speichern(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 let CB={left:0,top:0,width:1,height:1};
 function rahmen(){const r=f[i].getBoundingClientRect();return{left:r.left-CB.left,top:r.top-CB.top,width:r.width,height:r.height}}
 function abs(q,r){return[r.left+q[0]*r.width,r.top+q[1]*r.height,q[2]*r.width]}
-function segment(z,a,b,r){const A=abs(a,r),B=abs(b,r);X.globalAlpha=z.a||1;X.strokeStyle=z.c;X.lineWidth=B[2];
+function segment(z,a,b,r){const A=abs(a,r),B=abs(b,r);X.globalAlpha=z.a||1;X.strokeStyle=ton(z.c);X.lineWidth=B[2];
  X.lineCap=X.lineJoin='round';X.beginPath();X.moveTo(A[0],A[1]);X.lineTo(B[0],B[1]);X.stroke();X.globalAlpha=1}
 function strich(z,r){const p=z.p;if(p.length===1){segment(z,p[0],p[0],r);return}
- if(z.m){X.globalAlpha=z.a;X.strokeStyle=z.c;X.lineWidth=abs(p[0],r)[2];X.lineCap=X.lineJoin='round';X.beginPath();
+ if(z.m){X.globalAlpha=z.a;X.strokeStyle=ton(z.c);X.lineWidth=abs(p[0],r)[2];X.lineCap=X.lineJoin='round';X.beginPath();
   p.forEach((q,k)=>{const A=abs(q,r);k?X.lineTo(A[0],A[1]):X.moveTo(A[0],A[1])});X.stroke();X.globalAlpha=1;return}
  for(let k=1;k<p.length;k++)segment(z,p[k-1],p[k],r)}
-function malen(){X.clearRect(0,0,CB.width,CB.height);f[i].classList.toggle('beschrieben',!!(S[i]||[]).length);
+// Auf dunklen Folien: Schwarz wird Weiss, Graublau wird Hellblau
+function ton(c){return f[i].classList.contains('dunkel')?({'#2B2727':'#FFFFFF','#4A6488':'#9DB4E0'}[c]||c):c}
+function malen(){X.clearRect(0,0,CB.width,CB.height);WZ.classList.toggle('dunkel',f[i].classList.contains('dunkel'));f[i].classList.toggle('beschrieben',!!(S[i]||[]).length);
  const r=rahmen();(S[i]||[]).forEach(z=>strich(z,r))}
 function groesse(){const d=devicePixelRatio||1;CB=C.getBoundingClientRect();C.width=Math.round(CB.width*d);C.height=Math.round(CB.height*d);
  X.setTransform(C.width/CB.width,0,0,C.height/CB.height,0,0);malen()}

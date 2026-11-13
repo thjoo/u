@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="de-CH"><head><meta name="robots" content="noindex,nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Querprofil durchs Tal</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Open Sans',sans-serif;color:#2B2727;background:#0b1020}
+#map{position:fixed;inset:0}
+.tafel{position:fixed;left:16px;top:16px;max-width:380px;background:rgba(250,247,242,.95);padding:16px 18px;z-index:5;box-shadow:0 4px 18px rgba(0,0,0,.25)}
+.tafel h1{font-family:'Montserrat',sans-serif;font-weight:800;font-size:20px;line-height:1.2;margin-bottom:6px}
+.tafel p{font-size:14px;line-height:1.5;margin-bottom:8px}
+.tafel .klein{font-size:12px;opacity:.7}
+.knoepfe{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+button{appearance:none;border:1px solid #171782;background:#fff;color:#171782;font:600 13px 'Open Sans',sans-serif;padding:6px 10px;cursor:pointer}
+button.an{background:#171782;color:#D9D6EE}
+input[type=range]{width:100%}
+a{color:#171782}
+.zurueck{position:fixed;right:16px;top:16px;z-index:5;background:rgba(250,247,242,.95);padding:6px 10px;font-size:13px;text-decoration:none}
+</style></head><body>
+<div id="map"></div>
+<a class="zurueck" href="index.html">← Alle Beispiele</a>
+<script>mapboxgl.accessToken='pk.eyJ1IjoidGhqbyIsImEiOiJjbXdmaWNjZGcwYTJxMnlyMWRvYWJldzQ2In0.ZouAwT9dC6s-qPSOy37grQ';</script>
+
+<style>#profil{position:fixed;left:16px;right:16px;bottom:30px;height:200px;background:rgba(250,247,242,.95);z-index:5;box-shadow:0 4px 18px rgba(0,0,0,.25)}#profil svg{width:100%;height:100%;display:block}</style>
+<div class="tafel"><h1>Querprofil durchs Tal</h1>
+<p>Das Höhenprofil wird direkt aus dem Geländemodell gelesen. Wähle ein Tal oder klicke selbst zwei Punkte auf der Karte.</p>
+<div class="knoepfe"><button data-o="lauterbrunnen" class="an">Lauterbrunnental</button><button data-o="napf">Napfbergland</button><button id="selbst">Selbst zeichnen</button></div>
+<p class="klein" id="hinweis" style="margin-top:8px">Höhen: Mapbox Terrain DEM, ohne Überhöhung abgefragt.</p></div>
+<div id="profil"></div>
+<script>
+const LINIEN={lauterbrunnen:[[7.862,46.585],[7.962,46.585]],napf:[[7.985,47.005],[8.045,47.005]]};
+const map=new mapboxgl.Map({container:'map',style:'mapbox://styles/mapbox/standard-satellite',language:'de',center:[7.91,46.585],zoom:12.5,pitch:55,bearing:0,
+ config:{basemap:{showRoadsAndTransit:false,showRoadLabels:false,showPointOfInterestLabels:false,showTransitLabels:false}}});
+map.on('style.load',()=>{map.addSource('dem',{type:'raster-dem',url:'mapbox://mapbox.mapbox-terrain-dem-v1',tileSize:512,maxzoom:14});map.setTerrain({source:'dem',exaggeration:1})});
+function linieSetzen(l){const d={type:'Feature',geometry:{type:'LineString',coordinates:l}};
+ if(map.getSource('linie'))map.getSource('linie').setData(d);else{map.addSource('linie',{type:'geojson',data:d});
+  map.addLayer({id:'linie',type:'line',source:'linie',paint:{'line-color':'#C0392B','line-width':4,'line-emissive-strength':1}})}}
+function profil(l){const N=200,pts=[];const[a,b]=l;
+ const km=(p,q)=>{const R=6371,r=Math.PI/180,dl=(q[1]-p[1])*r,dn=(q[0]-p[0])*r;const x=Math.sin(dl/2)**2+Math.cos(p[1]*r)*Math.cos(q[1]*r)*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(x))};
+ const L=km(a,b);for(let k=0;k<=N;k++){const t=k/N,p=[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];const h=map.queryTerrainElevation(p,{exaggerated:false});if(h!=null)pts.push([t*L,h])}
+ if(pts.length<10){setTimeout(()=>profil(l),800);return}
+ const W=1000,H=200,m={l:60,r:20,t:20,b:30};const hs=pts.map(p=>p[1]),hmin=Math.floor(Math.min(...hs)/100)*100,hmax=Math.ceil(Math.max(...hs)/100)*100;
+ // gleicher Massstab horizontal und vertikal wäre zu flach, darum Überhöhung angeben
+ const sx=x=>m.l+x/L*(W-m.l-m.r),sy=h=>H-m.b-(h-hmin)/(hmax-hmin)*(H-m.t-m.b);
+ const ue=((hmax-hmin)/(H-m.t-m.b))/((L*1000)/(W-m.l-m.r));
+ let d=`M${sx(0)},${H-m.b}`+pts.map(p=>`L${sx(p[0]).toFixed(1)},${sy(p[1]).toFixed(1)}`).join('')+`L${sx(L)},${H-m.b}Z`;
+ let ach='';for(let h=hmin;h<=hmax;h+=Math.max(100,Math.round((hmax-hmin)/4/100)*100))ach+=`<line x1="${m.l}" x2="${W-m.r}" y1="${sy(h)}" y2="${sy(h)}" stroke="#ddd"/><text x="${m.l-6}" y="${sy(h)+4}" text-anchor="end" font-size="11">${h} m</text>`;
+ document.getElementById('profil').innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${ach}<path d="${d}" fill="#B4AFD5" stroke="#171782" stroke-width="2"/><text x="${W-m.r}" y="${H-8}" text-anchor="end" font-size="11">Profillänge ${L.toFixed(1)} km, Höhe nicht massstäblich</text></svg>`}
+function zeige(l){linieSetzen(l);const bb=new mapboxgl.LngLatBounds(l[0],l[0]).extend(l[1]);
+ map.fitBounds(bb,{padding:{top:120,bottom:280,left:420,right:80},pitch:50,bearing:0,duration:2500});map.once('idle',()=>profil(l))}
+map.on('load',()=>zeige(LINIEN.lauterbrunnen));
+let klicks=null;
+document.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.knoepfe button').forEach(x=>x.classList.toggle('an',x===b));klicks=null;zeige(LINIEN[b.dataset.o])});
+document.getElementById('selbst').onclick=e=>{document.querySelectorAll('.knoepfe button').forEach(x=>x.classList.toggle('an',x===e.target));klicks=[];document.getElementById('hinweis').textContent='Klicke den Anfangs- und den Endpunkt.'};
+map.on('click',e=>{if(!klicks)return;klicks.push([e.lngLat.lng,e.lngLat.lat]);if(klicks.length===2){const l=klicks;klicks=null;linieSetzen(l);profil(l);document.getElementById('hinweis').textContent='Für ein neues Profil nochmals «Selbst zeichnen».'}});
+</script></body></html>

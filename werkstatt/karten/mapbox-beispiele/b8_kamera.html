@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="de-CH"><head><meta name="robots" content="noindex,nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kamera auf dem Pfad</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Open Sans',sans-serif;color:#2B2727;background:#0b1020}
+#map{position:fixed;inset:0}
+.tafel{position:fixed;left:16px;top:16px;max-width:380px;background:rgba(250,247,242,.95);padding:16px 18px;z-index:5;box-shadow:0 4px 18px rgba(0,0,0,.25)}
+.tafel h1{font-family:'Montserrat',sans-serif;font-weight:800;font-size:20px;line-height:1.2;margin-bottom:6px}
+.tafel p{font-size:14px;line-height:1.5;margin-bottom:8px}
+.tafel .klein{font-size:12px;opacity:.7}
+.knoepfe{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+button{appearance:none;border:1px solid #171782;background:#fff;color:#171782;font:600 13px 'Open Sans',sans-serif;padding:6px 10px;cursor:pointer}
+button.an{background:#171782;color:#D9D6EE}
+input[type=range]{width:100%}
+a{color:#171782}
+.zurueck{position:fixed;right:16px;top:16px;z-index:5;background:rgba(250,247,242,.95);padding:6px 10px;font-size:13px;text-decoration:none}
+</style></head><body>
+<div id="map"></div>
+<a class="zurueck" href="index.html">← Alle Beispiele</a>
+<script>mapboxgl.accessToken='pk.eyJ1IjoidGhqbyIsImEiOiJjbXdmaWNjZGcwYTJxMnlyMWRvYWJldzQ2In0.ZouAwT9dC6s-qPSOy37grQ';</script>
+
+<div class="tafel"><h1>Kamera auf dem Pfad</h1>
+<p>Die Kamera folgt der Rhone vom Gletscher bis zum Genfersee, oder sie kreist um das Matterhorn.</p>
+<div class="knoepfe"><button id="rhone">▶ Rhone hinunter</button><button id="horn">⟳ Um das Matterhorn</button><button id="halt">❚❚ Anhalten</button></div>
+<p class="klein" style="margin-top:8px">Der Pfad sind zwölf von Hand gesetzte Punkte. Mit einer echten Flusslinie (z.B. aus swisstopo) wird der Flug genauer.</p></div>
+<script>
+const RHONE=[[8.383,46.600],[8.362,46.567],[8.330,46.520],[8.230,46.460],[8.130,46.400],[8.000,46.318],[7.880,46.297],[7.700,46.305],[7.530,46.290],[7.360,46.228],[7.200,46.170],[7.070,46.115],[7.010,46.200],[6.950,46.300],[6.880,46.385]];
+const map=new mapboxgl.Map({container:'map',style:'mapbox://styles/mapbox/standard-satellite',language:'de',center:[8.38,46.6],zoom:12,pitch:65,bearing:-120,
+ config:{basemap:{showRoadsAndTransit:false,showRoadLabels:false,showPointOfInterestLabels:false,showTransitLabels:false}}});
+map.on('style.load',()=>{map.addSource('dem',{type:'raster-dem',url:'mapbox://mapbox.mapbox-terrain-dem-v1',tileSize:512,maxzoom:14});map.setTerrain({source:'dem',exaggeration:1.2})});
+map.on('load',()=>{map.addSource('fluss',{type:'geojson',data:{type:'Feature',geometry:{type:'LineString',coordinates:RHONE}}});
+ map.addLayer({id:'fluss',type:'line',source:'fluss',paint:{'line-color':'#4fc3f7','line-width':4,'line-opacity':.8,'line-emissive-strength':1}})});
+// Punkt bei Anteil t entlang des Pfads (gleichmässig nach Länge)
+const seg=[];let ges=0;for(let k=1;k<RHONE.length;k++){const d=Math.hypot(RHONE[k][0]-RHONE[k-1][0],RHONE[k][1]-RHONE[k-1][1]);seg.push(d);ges+=d}
+function bei(t){let s=t*ges;for(let k=0;k<seg.length;k++){if(s<=seg[k]){const u=s/seg[k];return[RHONE[k][0]+(RHONE[k+1][0]-RHONE[k][0])*u,RHONE[k][1]+(RHONE[k+1][1]-RHONE[k][1])*u]}s-=seg[k]}return RHONE[RHONE.length-1]}
+let lauf=null;function stopp(){if(lauf)cancelAnimationFrame(lauf);lauf=null;map.stop()}
+document.getElementById('halt').onclick=stopp;
+document.getElementById('rhone').onclick=()=>{stopp();const DAUER=60000;let t0=null;
+ function bild(z){if(!t0)t0=z;const t=Math.min(1,(z-t0)/DAUER);
+  const ziel=bei(Math.min(1,t+0.025)),pos=bei(Math.max(0,t-0.035));
+  const cam=map.getFreeCameraOptions();cam.position=mapboxgl.MercatorCoordinate.fromLngLat(pos,4500);cam.lookAtPoint(ziel);map.setFreeCameraOptions(cam);
+  if(t<1)lauf=requestAnimationFrame(bild)}
+ lauf=requestAnimationFrame(bild)};
+document.getElementById('horn').onclick=()=>{stopp();map.jumpTo({center:[7.6586,45.9763],zoom:12.8,pitch:72,bearing:0});
+ const runde=()=>{map.easeTo({bearing:map.getBearing()+120,duration:12000,easing:t=>t});map.once('moveend',()=>{if(!lauf)return;runde()})};lauf=1;runde()};
+</script></body></html>

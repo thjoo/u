@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="de-CH"><head><meta name="robots" content="noindex,nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vorher und nachher</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Open Sans',sans-serif;color:#2B2727;background:#0b1020}
+#map{position:fixed;inset:0}
+.tafel{position:fixed;left:16px;top:16px;max-width:380px;background:rgba(250,247,242,.95);padding:16px 18px;z-index:5;box-shadow:0 4px 18px rgba(0,0,0,.25)}
+.tafel h1{font-family:'Montserrat',sans-serif;font-weight:800;font-size:20px;line-height:1.2;margin-bottom:6px}
+.tafel p{font-size:14px;line-height:1.5;margin-bottom:8px}
+.tafel .klein{font-size:12px;opacity:.7}
+.knoepfe{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+button{appearance:none;border:1px solid #171782;background:#fff;color:#171782;font:600 13px 'Open Sans',sans-serif;padding:6px 10px;cursor:pointer}
+button.an{background:#171782;color:#D9D6EE}
+input[type=range]{width:100%}
+a{color:#171782}
+.zurueck{position:fixed;right:16px;top:16px;z-index:5;background:rgba(250,247,242,.95);padding:6px 10px;font-size:13px;text-decoration:none}
+</style></head><body>
+<div id="map"></div>
+<a class="zurueck" href="index.html">← Alle Beispiele</a>
+<script>mapboxgl.accessToken='pk.eyJ1IjoidGhqbyIsImEiOiJjbXdmaWNjZGcwYTJxMnlyMWRvYWJldzQ2In0.ZouAwT9dC6s-qPSOy37grQ';</script>
+
+<style>#vorher,#nachher{position:fixed;inset:0}#nachher{clip-path:inset(0 0 0 50%)}#griff{position:fixed;top:0;bottom:0;left:50%;width:4px;margin-left:-2px;background:#fff;z-index:4;cursor:ew-resize;box-shadow:0 0 8px rgba(0,0,0,.5)}
+#griff::after{content:'‹ ›';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;color:#171782;font:700 16px 'Open Sans';padding:8px 6px;border-radius:20px;white-space:nowrap}
+.etikett{position:fixed;bottom:40px;z-index:4;background:rgba(43,39,39,.85);color:#fff;font:600 14px 'Open Sans';padding:6px 10px}#map{display:none}</style>
+<div id="vorher"></div><div id="nachher"></div><div id="griff"></div>
+<div class="etikett" style="left:16px" id="links">Siegfriedkarte</div><div class="etikett" style="right:16px">Satellitenbild heute</div>
+<div class="tafel"><h1>Vorher und nachher</h1>
+<p>Links die Siegfriedkarte von swisstopo (19. Jahrhundert), rechts das heutige Satellitenbild. Ziehe den Griff.</p>
+<div class="knoepfe"><button data-o="rhone" class="an">Rhonegletscher</button><button data-o="aletsch">Aletsch</button><button data-o="morteratsch">Morteratsch</button><button data-o="rosegg">Roseg</button></div>
+<p class="klein" style="margin-top:8px">Karten: swisstopo (hiks-siegfried). Die Kartenblätter stammen aus verschiedenen Jahren zwischen 1870 und 1926.</p></div>
+<script>
+const ORTE={rhone:{center:[8.38,46.585],zoom:12.6},aletsch:{center:[8.03,46.43],zoom:11.6},morteratsch:{center:[9.94,46.43],zoom:12.3},rosegg:{center:[9.86,46.41],zoom:12.2}};
+const alt={version:8,sources:{s:{type:'raster',tiles:['https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.hiks-siegfried/default/current/3857/{z}/{x}/{y}.png'],tileSize:256,minzoom:7,maxzoom:16,attribution:'© swisstopo'}},
+ layers:[{id:'bg',type:'background',paint:{'background-color':'#f3efe4'}},{id:'s',type:'raster',source:'s'}]};
+const a=new mapboxgl.Map({container:'vorher',style:alt,...ORTE.rhone});
+const b=new mapboxgl.Map({container:'nachher',style:'mapbox://styles/mapbox/satellite-v9',...ORTE.rhone});
+let sync=false;function folge(q,z){q.on('move',()=>{if(sync)return;sync=true;z.jumpTo({center:q.getCenter(),zoom:q.getZoom(),bearing:q.getBearing(),pitch:q.getPitch()});sync=false})}
+folge(a,b);folge(b,a);
+const g=document.getElementById('griff');let zieh=false;
+g.addEventListener('pointerdown',e=>{zieh=true;g.setPointerCapture(e.pointerId)});
+g.addEventListener('pointermove',e=>{if(!zieh)return;const p=Math.max(0,Math.min(100,e.clientX/innerWidth*100));g.style.left=p+'%';document.getElementById('nachher').style.clipPath=`inset(0 0 0 ${p}%)`});
+g.addEventListener('pointerup',()=>zieh=false);
+document.querySelectorAll('[data-o]').forEach(k=>k.onclick=()=>{document.querySelectorAll('[data-o]').forEach(x=>x.classList.toggle('an',x===k));a.flyTo({...ORTE[k.dataset.o],duration:3000})});
+</script></body></html>

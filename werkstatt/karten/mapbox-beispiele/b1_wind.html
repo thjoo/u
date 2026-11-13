@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="de-CH"><head><meta name="robots" content="noindex,nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wind als Partikel</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Open Sans',sans-serif;color:#2B2727;background:#0b1020}
+#map{position:fixed;inset:0}
+.tafel{position:fixed;left:16px;top:16px;max-width:380px;background:rgba(250,247,242,.95);padding:16px 18px;z-index:5;box-shadow:0 4px 18px rgba(0,0,0,.25)}
+.tafel h1{font-family:'Montserrat',sans-serif;font-weight:800;font-size:20px;line-height:1.2;margin-bottom:6px}
+.tafel p{font-size:14px;line-height:1.5;margin-bottom:8px}
+.tafel .klein{font-size:12px;opacity:.7}
+.knoepfe{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+button{appearance:none;border:1px solid #171782;background:#fff;color:#171782;font:600 13px 'Open Sans',sans-serif;padding:6px 10px;cursor:pointer}
+button.an{background:#171782;color:#D9D6EE}
+input[type=range]{width:100%}
+a{color:#171782}
+.zurueck{position:fixed;right:16px;top:16px;z-index:5;background:rgba(250,247,242,.95);padding:6px 10px;font-size:13px;text-decoration:none}
+</style></head><body>
+<div id="map"></div>
+<a class="zurueck" href="index.html">← Alle Beispiele</a>
+<script>mapboxgl.accessToken='pk.eyJ1IjoidGhqbyIsImEiOiJjbXdmaWNjZGcwYTJxMnlyMWRvYWJldzQ2In0.ZouAwT9dC6s-qPSOy37grQ';</script>
+
+<div class="tafel"><h1>Wind als Partikel</h1>
+<p>Bodenwind (10 m über Grund) aus dem Wettermodell GFS, als fliessende Partikel. Farbe: Windgeschwindigkeit.</p>
+<div class="knoepfe">
+<button data-o="pazifik" class="an">Passate Pazifik</button><button data-o="indien">Indischer Ozean</button><button data-o="atlantik">Nordatlantik</button><button data-o="antarktis">Westwinddrift</button></div>
+<p class="klein" style="margin-top:8px">Daten: Mapbox-Beispieldatensatz rasterarrayexamples.gfs-winds, Zeitpunkt nicht angegeben. Für aktuelle Daten müsste man eigene GFS-Daten über Mapbox hochladen.</p></div>
+<script>
+const ORTE={pazifik:{center:[-140,5],zoom:1.9},indien:{center:[75,5],zoom:2.2},atlantik:{center:[-35,45],zoom:2.2},antarktis:{center:[60,-55],zoom:1.9}};
+const map=new mapboxgl.Map({container:'map',style:'mapbox://styles/mapbox/standard',projection:'globe',language:'de',
+ config:{basemap:{theme:'monochrome',lightPreset:'night',showPointOfInterestLabels:false,showRoadLabels:false,showTransitLabels:false}},...ORTE.pazifik});
+map.on('load',()=>{
+ map.addSource('wind',{type:'raster-array',url:'mapbox://rasterarrayexamples.gfs-winds',tileSize:512});
+ map.addLayer({id:'wind',type:'raster-particle',source:'wind','source-layer':'10winds',paint:{
+  'raster-particle-speed-factor':.4,'raster-particle-fade-opacity-factor':.9,'raster-particle-reset-rate-factor':.4,
+  'raster-particle-count':4000,'raster-particle-max-speed':40,
+  'raster-particle-color':['interpolate',['linear'],['raster-particle-speed'],
+   1.5,'rgba(134,163,171,1)',5,'rgba(69,134,160,1)',8,'rgba(48,180,140,1)',11,'rgba(160,200,60,1)',
+   14,'rgba(240,200,40,1)',18,'rgba(240,120,40,1)',24,'rgba(210,40,60,1)',32,'rgba(170,30,140,1)',45,'rgba(255,60,255,1)']}})});
+document.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-o]').forEach(x=>x.classList.toggle('an',x===b));map.flyTo({...ORTE[b.dataset.o],duration:4000})});
+</script></body></html>

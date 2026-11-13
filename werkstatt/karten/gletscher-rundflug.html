@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head><meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<title>Gletscher der Welt</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+<script src='https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css' rel='stylesheet'>
+<style>
+/* Überarbeitet 13.11.2026: Mapbox GL JS v3 statt v2.0 (Globus statt Mercator, Terrain 1.2), eigene Scroll-Steuerung statt scrollama,
+   eindeutige Kapitel, Kacheln werden beim Öffnen unsichtbar vorgeladen. */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Montserrat',sans-serif;background:#0b1020;color:#fafafa}
+#karte{position:fixed;inset:0;width:100vw;height:100vh}
+#vorlader{position:fixed;left:-300vw;top:0;width:100vw;height:100vh}
+#story{position:relative;z-index:5;pointer-events:none}
+#kopf{text-align:center;padding:12vh 5vw 6vh;text-shadow:0 2px 12px rgba(0,0,0,.7)}
+#kopf h1{font-weight:800;font-size:clamp(32px,5vw,64px)}
+#kopf h2{font-weight:400;font-size:clamp(18px,2vw,26px);margin-top:1.5vh;opacity:.9}
+.schritt{padding-bottom:60vh;opacity:.3;transition:opacity .5s}
+.schritt.aktiv{opacity:1}
+.schritt.leer{visibility:hidden}
+.kasten{pointer-events:auto;background:rgba(40,40,44,.88);padding:26px 40px;line-height:1.6;font-size:17px;box-shadow:0 4px 24px rgba(0,0,0,.35)}
+.kasten h3{font-weight:800;font-size:22px;margin-bottom:12px}
+.kasten img{width:100%;display:block;margin-bottom:14px}
+.links{width:34vw;margin-left:5vw}
+.rechts{width:34vw;margin-left:61vw}
+.mitte{width:50vw;margin:0 auto}
+.voll{width:72vw;margin:0 auto}
+#fuss{position:relative;z-index:5;text-align:center;font-size:13px;line-height:1.8;padding:4vh 5vw 6vh;background:rgba(40,40,44,.92)}
+#fuss a{color:#9DB4E0}
+.mapboxgl-ctrl-attrib{font-size:10px!important}
+@media (max-width:800px){.links,.rechts,.mitte,.voll{width:92vw;margin:0 auto}.kasten{padding:20px 22px;font-size:16px}}
+</style>
+</head>
+<body>
+<div id="karte"></div>
+<div id="story">
+<div id="kopf"><h1>Gletscher der Welt</h1><h2>Einstieg in ein Naturwunder unserer Erde</h2></div>
+<div id="schritte"></div>
+</div>
+<div id="fuss">Text nach <a href="https://www.swisseduc.ch/glaciers/earth_icy_planet/glaciers00-de.html">Swisseduc</a> und eigener Text. Fotos: <a href="https://unsplash.com/">Unsplash</a>. Gletscherzahl: <a href="https://www.glims.org/rgi_user_guide/06_dataset_summary.html">RGI 7.0</a>, Süsswasseranteil: <a href="https://www.usgs.gov/water-science-school/science/ice-snow-and-glaciers-and-water-cycle">USGS</a>.<br>Karte: Mapbox GL JS, Satellitenbild und Höhenmodell von Mapbox und Maxar.</div>
+<script>
+const U='https://images.unsplash.com/';
+const KAPITEL=[
+ {id:'einstieg',lage:'voll',titel:'Gletscher: eine Übersicht',bild:U+'photo-1473800447596-01729482b8eb?auto=format&fit=crop&w=1600&q=80',
+  text:'Gletscher gehören zu den grossartigsten Naturwundern unserer Erde. Gletscher, Eiskappen und Eisschilde bedecken heute einen Zehntel der Landoberfläche. Während Jahrmillionen haben sie Felsen abgeschliffen und die Sedimente weit von ihrem Ursprung weggetragen. Ihr Schmelzwasser treibt Turbinen an, bringt mineralreiche Böden hervor und hat uns wertvolle Sand- und Kieslager beschert. Doch Gletscher stellen auch eine stete Bedrohung für Leben und Besitzgüter der Menschen dar. Unsere Zukunft ist indirekt mit dem Schicksal der Gletscher und ihrem Einfluss auf Klima und Meeresspiegel verbunden.',
+  ort:{center:[0.50933,25.05753],zoom:1.68}},
+ {id:'alpen',lage:'rechts',bild:U+'photo-1584366300230-5ce550abcd7c?auto=format&fit=crop&w=1200&q=80',
+  text:'Gletscher verteilen sich über den Alpenraum …',ort:{center:[8.56332,46.35129],zoom:6.78,bearing:-3.16}},
+ {id:'alaska',lage:'links',bild:U+'photo-1616009041734-6add3775550c?auto=format&fit=crop&w=900&q=80',
+  text:'… bis hin nach Alaska, wo sie ganze Küsten einnehmen.',ort:{center:[-147.28914,61.17165],zoom:9,pitch:52}},
+ {id:'patagonien',lage:'rechts',bild:U+'photo-1542653656097-725339c06a7e?auto=format&fit=crop&w=900&q=80',
+  text:'Ebenso verteilen sich Gletscher auf der Südhalbkugel, hier in Patagonien.',ort:{center:[-73.9613,-48.79984],zoom:11.42,pitch:70,bearing:70.4}},
+ {id:'gemeinsamkeiten',lage:'links',titel:'Gemeinsamkeiten',
+  text:'Gletschereis bildet sich dort, wo es das ganze Jahr über sehr kalt ist. Solch niedrige Temperaturen herrschen weit oben in Gebirgen, zum Beispiel in den Alpen oder in Patagonien. Auch in den Gebieten rund um Nordpol oder Südpol fällt das ganze Jahr über mehr Schnee als wieder abtauen kann. Für die Entstehung von Gletschereis muss es also im Jahresschnitt sehr kühl sein, aber dennoch Niederschlag geben, damit sich Schnee ansammeln kann.',
+  ort:{center:[8.09387,46.55678],zoom:9.45,pitch:43,bearing:72}},
+ {id:'verbreitung',lage:'voll',titel:'Wo gibt es überall Gletscher?',
+  text:'Gletscher lassen sich nach Lage, Grösse und Form in unterschiedliche Kategorien einteilen. Zu den Oberkategorien gehören die Gebirgsgletscher und die Deckgletscher. Gletscher und Eisschilde speichern rund 69 % der weltweiten Süsswasservorräte und bedecken rund 10 % des Festlands. Wie viele Gletscher es gibt, war lange unbekannt, die Zahl schwankte je nach Studie stark. Das aktuelle Gletscherinventar zählt rund 275 000 Gletscher, die Eisschilde von Grönland und der Antarktis nicht mitgerechnet.',
+  ort:{center:[-30,55],zoom:1.8}},
+ {id:'kargletscher',lage:'links',titel:'Kargletscher im Engadin',
+  text:'Zu den Gebirgsgletschern zählen die Eisstromnetze, Talgletscher und Kargletscher. Kargletscher entstehen meist im Hochgebirge in Mulden, an denen sich über das ganze Jahr Schnee ansammeln kann. Diese Gletscher sind die ersten, die entstehen, wenn ein Gebirge vergletschert, und die letzten, die bleiben, bevor es eisfrei wird.',
+  ort:{center:[9.69859,46.53126],zoom:13.0,pitch:55,bearing:-83.19},drehen:true},
+ {id:'talgletscher',lage:'rechts',titel:'Talgletscher: der Aletschgletscher',
+  text:'Wenn mehr Schnee liegen bleibt als abschmilzt, wächst der Gletscher. Bei einem grossen Schneeüberschuss fliessen längere Gletscherzungen aus und die Kargletscher werden zu Talgletschern. Dies sind die typischen grösseren Gletscher der Hochgebirge, die in allen Klimazonen vorkommen. Hier siehst du den Aletschgletscher.',
+  ort:{center:[8.06746,46.4541],zoom:12.51,pitch:60,bearing:-16}},
+ {id:'eisstromnetz',lage:'links',titel:'Eisstromnetz auf Svalbard (Spitzbergen)',
+  text:'Der denkbar stärkste Vergletscherungstyp eines Gebirges ist das Eisstromnetz. Wachsen Talgletscher so stark an, dass sie sich verbinden und grosse Flächen bedecken, nennt man sie Eisstromnetze.',
+  ort:{center:[13.72819,79.24292],zoom:12.6,pitch:75,bearing:-153.6}},
+ {id:'svalbard',leer:true,ort:{center:[19.07941,78.6749],zoom:5.17}},
+ {id:'eisschild',lage:'links',titel:'Eisschild',bild:U+'photo-1519227778781-02fbc3c547a6?auto=format&fit=crop&w=1400&q=80',
+  text:'Zu den Deckgletschern gehören Eisschilde, Vorlandgletscher und Plateaugletscher. Eisschilde findet man an den Polen, also in der Antarktis und auf Grönland. Vorlandgletscher gab es zur Eiszeit im Alpenraum, als die Gletscher bis ins Mittelland vorstiessen.',
+  ort:{center:[-40.29671,75.07913],zoom:2.9,bearing:12.67}},
+ {id:'plateaugletscher',lage:'links',titel:'Plateaugletscher',
+  text:'Plateaugletscher findet man heute zum Beispiel in Norwegen und auf Island, hier der Hofsjökull. Sie überdecken grosse Flächen, fliessen aber wegen der Topografie nicht als Zunge ins Tal hinunter.',
+  ort:{center:[-18.92466,64.74369],zoom:8.6,pitch:50,bearing:34.27}}
+];
+
+// Kapitel aufbauen
+const box=document.getElementById('schritte');
+KAPITEL.forEach(k=>{const s=document.createElement('div');s.className='schritt '+(k.lage||'mitte')+(k.leer?' leer':'');s.dataset.id=k.id;
+ if(!k.leer){const d=document.createElement('div');d.className='kasten';
+  if(k.titel){const h=document.createElement('h3');h.textContent=k.titel;d.appendChild(h)}
+  if(k.bild){const im=new Image();im.src=k.bild;im.alt='';im.loading='lazy';d.appendChild(im)}
+  const p=document.createElement('p');p.textContent=k.text;d.appendChild(p);s.appendChild(d)}
+ box.appendChild(s)});
+
+mapboxgl.accessToken='pk.eyJ1IjoidGhqbyIsImEiOiJjbXdmaWNjZGcwYTJxMnlyMWRvYWJldzQ2In0.ZouAwT9dC6s-qPSOy37grQ';
+const STIL='mapbox://styles/thjo/ckucbpl6q127z18k1sy3mbmt4';
+function aufbau(m){m.on('style.load',()=>{m.setTerrain({source:'mapbox://mapbox.mapbox-terrain-dem-v1',exaggeration:1.2});m.setFog({})})}
+function kamera(o){return{center:o.center,zoom:o.zoom,pitch:o.pitch||0,bearing:o.bearing||0}}
+
+const map=new mapboxgl.Map({container:'karte',style:STIL,projection:'globe',interactive:false,...kamera(KAPITEL[0].ort)});aufbau(map);
+
+// Scrollen: das Kapitel, das die Bildschirmmitte kreuzt, ist aktiv
+let aktiv=null;
+function betrete(k,el){if(aktiv===k.id)return;aktiv=k.id;
+ document.querySelectorAll('.schritt').forEach(s=>s.classList.toggle('aktiv',s===el));
+ map.stop();map.flyTo({...kamera(k.ort),speed:.6,curve:1,essential:true});
+ if(k.drehen)map.once('moveend',()=>{if(aktiv===k.id)map.easeTo({bearing:map.getBearing()+90,duration:24000,easing:t=>t,essential:true})})}
+const beob=new IntersectionObserver(eintraege=>eintraege.forEach(e=>{if(e.isIntersecting){const k=KAPITEL.find(x=>x.id===e.target.dataset.id);betrete(k,e.target)}}),{rootMargin:'-50% 0px -50% 0px'});
+document.querySelectorAll('.schritt').forEach(s=>beob.observe(s));
+
+// Vorladen: eine zweite, unsichtbare Karte springt alle Kapitel ab, danach liegen die Kacheln im Browser-Zwischenspeicher
+function warte(ms){return new Promise(r=>setTimeout(r,ms))}
+map.once('load',async()=>{
+ const v=document.createElement('div');v.id='vorlader';document.body.appendChild(v);
+ const vm=new mapboxgl.Map({container:v,style:STIL,projection:'globe',interactive:false,...kamera(KAPITEL[0].ort)});aufbau(vm);
+ await new Promise(r=>vm.once('load',r));
+ for(const k of KAPITEL){vm.jumpTo(kamera(k.ort));await Promise.race([new Promise(r=>vm.once('idle',r)),warte(15000)])}
+ vm.remove();v.remove();console.log('Gletscherflug vorgeladen')});
+</script>
+</body>
+</html>

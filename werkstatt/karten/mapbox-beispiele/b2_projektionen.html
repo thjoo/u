@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="de-CH"><head><meta name="robots" content="noindex,nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Projektionen vergleichen</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Open Sans',sans-serif;color:#2B2727;background:#0b1020}
+#map{position:fixed;inset:0}
+.tafel{position:fixed;left:16px;top:16px;max-width:380px;background:rgba(250,247,242,.95);padding:16px 18px;z-index:5;box-shadow:0 4px 18px rgba(0,0,0,.25)}
+.tafel h1{font-family:'Montserrat',sans-serif;font-weight:800;font-size:20px;line-height:1.2;margin-bottom:6px}
+.tafel p{font-size:14px;line-height:1.5;margin-bottom:8px}
+.tafel .klein{font-size:12px;opacity:.7}
+.knoepfe{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+button{appearance:none;border:1px solid #171782;background:#fff;color:#171782;font:600 13px 'Open Sans',sans-serif;padding:6px 10px;cursor:pointer}
+button.an{background:#171782;color:#D9D6EE}
+input[type=range]{width:100%}
+a{color:#171782}
+.zurueck{position:fixed;right:16px;top:16px;z-index:5;background:rgba(250,247,242,.95);padding:6px 10px;font-size:13px;text-decoration:none}
+</style></head><body>
+<div id="map"></div>
+<a class="zurueck" href="index.html">← Alle Beispiele</a>
+<script>mapboxgl.accessToken='pk.eyJ1IjoidGhqbyIsImEiOiJjbXdmaWNjZGcwYTJxMnlyMWRvYWJldzQ2In0.ZouAwT9dC6s-qPSOy37grQ';</script>
+
+<div class="tafel"><h1>Projektionen vergleichen</h1>
+<p id="erkl">Globus: keine Verzerrung, aber nur eine Halbkugel sichtbar.</p>
+<div class="knoepfe">
+<button data-p="globe" class="an">Globus</button><button data-p="mercator">Mercator</button><button data-p="equalEarth">Equal Earth</button><button data-p="naturalEarth">Natural Earth</button><button data-p="winkelTripel">Winkel Tripel</button><button data-p="equirectangular">Plattkarte</button></div>
+<p class="klein" style="margin-top:8px">Achte auf Grönland und Afrika: In Wirklichkeit ist Afrika rund 14-mal so gross wie Grönland.</p></div>
+<script>
+const ERKL={globe:'Globus: keine Verzerrung, aber nur eine Halbkugel sichtbar.',
+ mercator:'Mercator: winkeltreu, darum gut für die Navigation. Flächen gegen die Pole hin stark vergrössert.',
+ equalEarth:'Equal Earth: flächentreu, die Grössen stimmen im Verhältnis. Formen am Rand verzerrt.',
+ naturalEarth:'Natural Earth: Kompromiss, weder flächen- noch winkeltreu, aber gefälliges Gesamtbild.',
+ winkelTripel:'Winkel Tripel: Kompromiss, den National Geographic für Weltkarten verwendet.',
+ equirectangular:'Plattkarte: Länge und Breite einfach als Raster. Gegen die Pole hin in die Breite gezogen.'};
+const map=new mapboxgl.Map({container:'map',style:'mapbox://styles/mapbox/satellite-v9',projection:'globe',center:[0,30],zoom:1.1});
+map.on('style.load',()=>map.setFog({}));
+map.on('load',()=>{
+ map.addSource('laender',{type:'vector',url:'mapbox://mapbox.country-boundaries-v1'});
+ map.addLayer({id:'hervor',type:'fill',source:'laender','source-layer':'country_boundaries',
+  filter:['in',['get','iso_3166_1'],['literal',['GL','CD','DZ','EG','NG','ZA','ET','SD','LY','TD','NE','ML','AO','MR','TZ','KE','SO','ZM','MZ','NA','BW','MG','CM','CF','SS','MA','TN','ZW','GA','CG','GH','CI','BF','GN','UG','SN','ER','MW','BJ','TG','SL','LR','RW','BI','DJ','GQ','GM','GW','LS','SZ','EH']]],
+  paint:{'fill-color':['match',['get','iso_3166_1'],'GL','#ffd400','#C0392B'],'fill-opacity':.45}})});
+document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-p]').forEach(x=>x.classList.toggle('an',x===b));
+ map.setProjection(b.dataset.p);document.getElementById('erkl').textContent=ERKL[b.dataset.p];map.easeTo({center:[0,30],zoom:b.dataset.p==='globe'?1.1:0.6,duration:800})});
+</script></body></html>

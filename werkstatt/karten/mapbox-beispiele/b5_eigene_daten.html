@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="de-CH"><head><meta name="robots" content="noindex,nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eigene Daten auf der Karte</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Open Sans',sans-serif;color:#2B2727;background:#0b1020}
+#map{position:fixed;inset:0}
+.tafel{position:fixed;left:16px;top:16px;max-width:380px;background:rgba(250,247,242,.95);padding:16px 18px;z-index:5;box-shadow:0 4px 18px rgba(0,0,0,.25)}
+.tafel h1{font-family:'Montserrat',sans-serif;font-weight:800;font-size:20px;line-height:1.2;margin-bottom:6px}
+.tafel p{font-size:14px;line-height:1.5;margin-bottom:8px}
+.tafel .klein{font-size:12px;opacity:.7}
+.knoepfe{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+button{appearance:none;border:1px solid #171782;background:#fff;color:#171782;font:600 13px 'Open Sans',sans-serif;padding:6px 10px;cursor:pointer}
+button.an{background:#171782;color:#D9D6EE}
+input[type=range]{width:100%}
+a{color:#171782}
+.zurueck{position:fixed;right:16px;top:16px;z-index:5;background:rgba(250,247,242,.95);padding:6px 10px;font-size:13px;text-decoration:none}
+</style></head><body>
+<div id="map"></div>
+<a class="zurueck" href="index.html">← Alle Beispiele</a>
+<script>mapboxgl.accessToken='pk.eyJ1IjoidGhqbyIsImEiOiJjbXdmaWNjZGcwYTJxMnlyMWRvYWJldzQ2In0.ZouAwT9dC6s-qPSOy37grQ';</script>
+
+<div class="tafel"><h1>Eigene Daten: Klimastationen</h1>
+<p>Zehn Stationen als eigene Datenpunkte. Die Farbe kommt aus den Daten (Klimazone nach Köppen-Geiger). Klicke auf einen Punkt.</p>
+<div class="knoepfe"><button data-z="alle" class="an">Alle</button><button data-z="A">Tropisch</button><button data-z="B">Trocken</button><button data-z="C">Gemässigt</button><button data-z="D">Boreal</button><button data-z="E">Polar</button></div>
+<p class="klein" style="margin-top:8px">So liessen sich deine Klimadiagramme, Exkursionsorte oder die Gletscher aus dem Inventar auf die Karte legen.</p></div>
+<script>
+const P=(n,lon,lat,k,t)=>({type:'Feature',geometry:{type:'Point',coordinates:[lon,lat]},properties:{name:n,koeppen:k,zone:k[0],text:t}});
+const STATIONEN={type:'FeatureCollection',features:[
+ P('Zürich',8.54,47.38,'Cfb','Gemässigtes Klima, ganzjährig feucht, warme Sommer.'),
+ P('Brest',-4.49,48.39,'Cfb','Ozeanisch: milde Winter, kühle Sommer.'),
+ P('Manaus',-60.02,-3.12,'Af','Tropisches Regenwaldklima, Regen in jedem Monat.'),
+ P('Mumbai',72.88,19.08,'Am','Tropisches Monsunklima, Regen fast nur im Sommer.'),
+ P('Cairns',145.77,-16.92,'Aw','Tropisches Savannenklima mit Trockenzeit.'),
+ P('Kairo',31.24,30.04,'BWh','Heisses Wüstenklima.'),
+ P('Lima',-77.04,-12.05,'BWh','Küstenwüste am kalten Humboldtstrom.'),
+ P('Jakutsk',129.73,62.03,'Dfd','Extrem kontinental, sehr kalte Winter.'),
+ P('Utqiaġvik',-156.79,71.29,'ET','Tundrenklima, kein Monat über 10 °C.'),
+ P('Kapstadt',18.42,-33.92,'Csb','Mediterran: trockene Sommer, feuchte Winter.')]};
+const map=new mapboxgl.Map({container:'map',style:'mapbox://styles/mapbox/standard-satellite',projection:'globe',language:'de',center:[20,25],zoom:1.4,
+ config:{basemap:{showRoadsAndTransit:false,showRoadLabels:false,showPointOfInterestLabels:false,showTransitLabels:false,showAdminBoundaries:false}}});
+map.on('load',()=>{
+ map.addSource('st',{type:'geojson',data:STATIONEN});
+ map.addLayer({id:'st',type:'circle',source:'st',paint:{'circle-radius':9,'circle-stroke-width':2,'circle-stroke-color':'#fff','circle-emissive-strength':1,
+  'circle-color':['match',['get','zone'],'A','#1a9850','B','#e6a23c','C','#4A90D9','D','#7b4fb5','E','#9ecae1','#888']}});
+ map.addLayer({id:'stn',type:'symbol',source:'st',layout:{'text-field':['get','name'],'text-offset':[0,1.3],'text-size':13,'text-anchor':'top'},
+  paint:{'text-color':'#fff','text-halo-color':'#000','text-halo-width':1.2,'text-emissive-strength':1}});
+ map.on('click','st',e=>{const p=e.features[0].properties;
+  new mapboxgl.Popup({offset:12}).setLngLat(e.features[0].geometry.coordinates).setHTML(`<b>${p.name}</b> (${p.koeppen})<br>${p.text}`).addTo(map)});
+ map.on('mouseenter','st',()=>map.getCanvas().style.cursor='pointer');map.on('mouseleave','st',()=>map.getCanvas().style.cursor='')});
+document.querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-z]').forEach(x=>x.classList.toggle('an',x===b));
+ const f=b.dataset.z==='alle'?null:['==',['get','zone'],b.dataset.z];map.setFilter('st',f);map.setFilter('stn',f)});
+</script></body></html>

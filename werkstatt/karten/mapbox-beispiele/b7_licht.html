@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="de-CH"><head><meta name="robots" content="noindex,nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Licht und Farbthemen</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Open Sans',sans-serif;color:#2B2727;background:#0b1020}
+#map{position:fixed;inset:0}
+.tafel{position:fixed;left:16px;top:16px;max-width:380px;background:rgba(250,247,242,.95);padding:16px 18px;z-index:5;box-shadow:0 4px 18px rgba(0,0,0,.25)}
+.tafel h1{font-family:'Montserrat',sans-serif;font-weight:800;font-size:20px;line-height:1.2;margin-bottom:6px}
+.tafel p{font-size:14px;line-height:1.5;margin-bottom:8px}
+.tafel .klein{font-size:12px;opacity:.7}
+.knoepfe{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+button{appearance:none;border:1px solid #171782;background:#fff;color:#171782;font:600 13px 'Open Sans',sans-serif;padding:6px 10px;cursor:pointer}
+button.an{background:#171782;color:#D9D6EE}
+input[type=range]{width:100%}
+a{color:#171782}
+.zurueck{position:fixed;right:16px;top:16px;z-index:5;background:rgba(250,247,242,.95);padding:6px 10px;font-size:13px;text-decoration:none}
+</style></head><body>
+<div id="map"></div>
+<a class="zurueck" href="index.html">← Alle Beispiele</a>
+<script>mapboxgl.accessToken='pk.eyJ1IjoidGhqbyIsImEiOiJjbXdmaWNjZGcwYTJxMnlyMWRvYWJldzQ2In0.ZouAwT9dC6s-qPSOy37grQ';</script>
+
+<div class="tafel"><h1>Licht und Farbthemen</h1>
+<p>Der Standard-Stil von Mapbox mit 3D-Gebäuden. Lichtstimmung und Farbthema lassen sich mit einer Zeile Code umstellen.</p>
+<p class="klein">Licht</p><div class="knoepfe" id="licht"><button data-v="dawn">Morgen</button><button data-v="day" class="an">Tag</button><button data-v="dusk">Abend</button><button data-v="night">Nacht</button></div>
+<p class="klein" style="margin-top:8px">Farbthema</p><div class="knoepfe" id="thema"><button data-v="default" class="an">Standard</button><button data-v="faded">Blass</button><button data-v="monochrome">Einfarbig</button></div>
+<p class="klein" style="margin-top:8px">Ort</p><div class="knoepfe" id="ort"><button data-v="zh" class="an">Zürich</button><button data-v="matterhorn">Zermatt</button></div>
+<p class="klein" style="margin-top:8px">«Einfarbig» eignet sich, wenn eigene Daten im Vordergrund stehen sollen.</p></div>
+<script>
+const ORTE={zh:{center:[8.5417,47.3735],zoom:15.6,pitch:62,bearing:-20},matterhorn:{center:[7.70,45.995],zoom:12.6,pitch:70,bearing:-120}};
+const map=new mapboxgl.Map({container:'map',style:'mapbox://styles/mapbox/standard',language:'de',...ORTE.zh,config:{basemap:{lightPreset:'day',theme:'default'}}});
+function gruppe(id,f){document.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#'+id+' button').forEach(x=>x.classList.toggle('an',x===b));f(b.dataset.v)})}
+gruppe('licht',v=>map.setConfigProperty('basemap','lightPreset',v));
+gruppe('thema',v=>map.setConfigProperty('basemap','theme',v));
+gruppe('ort',v=>map.flyTo({...ORTE[v],duration:5000}));
+</script></body></html>

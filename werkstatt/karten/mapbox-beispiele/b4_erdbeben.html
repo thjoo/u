@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="de-CH"><head><meta name="robots" content="noindex,nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Erdbeben im Zeitraffer</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Open Sans',sans-serif;color:#2B2727;background:#0b1020}
+#map{position:fixed;inset:0}
+.tafel{position:fixed;left:16px;top:16px;max-width:380px;background:rgba(250,247,242,.95);padding:16px 18px;z-index:5;box-shadow:0 4px 18px rgba(0,0,0,.25)}
+.tafel h1{font-family:'Montserrat',sans-serif;font-weight:800;font-size:20px;line-height:1.2;margin-bottom:6px}
+.tafel p{font-size:14px;line-height:1.5;margin-bottom:8px}
+.tafel .klein{font-size:12px;opacity:.7}
+.knoepfe{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+button{appearance:none;border:1px solid #171782;background:#fff;color:#171782;font:600 13px 'Open Sans',sans-serif;padding:6px 10px;cursor:pointer}
+button.an{background:#171782;color:#D9D6EE}
+input[type=range]{width:100%}
+a{color:#171782}
+.zurueck{position:fixed;right:16px;top:16px;z-index:5;background:rgba(250,247,242,.95);padding:6px 10px;font-size:13px;text-decoration:none}
+</style></head><body>
+<div id="map"></div>
+<a class="zurueck" href="index.html">← Alle Beispiele</a>
+<script>mapboxgl.accessToken='pk.eyJ1IjoidGhqbyIsImEiOiJjbXdmaWNjZGcwYTJxMnlyMWRvYWJldzQ2In0.ZouAwT9dC6s-qPSOy37grQ';</script>
+
+<div class="tafel"><h1>Erdbeben 2025 im Zeitraffer</h1>
+<p>Alle Erdbeben ab Magnitude 5 im Jahr 2025. Die Punkte sammeln sich Woche für Woche, bis die Plattengrenzen sichtbar werden.</p>
+<p style="font-weight:700" id="datum">lädt Daten …</p>
+<input type="range" id="regler" min="0" max="52" value="0">
+<div class="knoepfe"><button id="los">▶ Abspielen</button><button id="platten">Plattengrenzen zeigen</button></div>
+<p class="klein" style="margin-top:8px">Daten: USGS Earthquake Catalog, live abgefragt. Plattengrenzen: Bird (2003), PB2002.</p></div>
+<script>
+const map=new mapboxgl.Map({container:'map',style:'mapbox://styles/mapbox/satellite-v9',projection:'globe',center:[150,10],zoom:1.5});
+map.on('style.load',()=>map.setFog({}));
+const START=Date.parse('2025-01-01T00:00:00Z'),WOCHE=7*864e5;
+function zeige(w){map.setFilter('beben',['<=',['get','time'],START+(w+1)*WOCHE]);
+ const d=new Date(Math.min(START+(w+1)*WOCHE,Date.parse('2025-12-31')));document.getElementById('datum').textContent='bis '+d.toLocaleDateString('de-CH',{day:'numeric',month:'long',year:'numeric'})}
+map.on('load',async()=>{
+ const r=await fetch('https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2025-01-01&endtime=2026-01-01&minmagnitude=5&orderby=time-asc');
+ const daten=await r.json();
+ map.addSource('beben',{type:'geojson',data:daten});
+ map.addSource('platten',{type:'geojson',data:'https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json'});
+ map.addLayer({id:'platten',type:'line',source:'platten',layout:{visibility:'none'},paint:{'line-color':'#ffd400','line-width':1.5,'line-opacity':.8}});
+ map.addLayer({id:'beben',type:'circle',source:'beben',paint:{
+  'circle-radius':['interpolate',['linear'],['get','mag'],5,2.5,6,5,7,10,8,18],
+  'circle-color':['interpolate',['linear'],['get','mag'],5,'#ffb347',6,'#ff6a3d',7,'#C0392B'],
+  'circle-opacity':.85,'circle-stroke-color':'#fff','circle-stroke-width':.5,'circle-emissive-strength':1}});
+ zeige(0);document.getElementById('regler').oninput=e=>zeige(+e.target.value)});
+let lauf=null;document.getElementById('los').onclick=e=>{const R=document.getElementById('regler');
+ if(lauf){clearInterval(lauf);lauf=null;e.target.textContent='▶ Abspielen';return}
+ if(+R.value>=52)R.value=0;e.target.textContent='❚❚ Anhalten';
+ lauf=setInterval(()=>{R.value=+R.value+1;zeige(+R.value);if(+R.value>=52){clearInterval(lauf);lauf=null;e.target.textContent='▶ Abspielen'}},350)};
+document.getElementById('platten').onclick=e=>{const v=map.getLayoutProperty('platten','visibility')==='none';map.setLayoutProperty('platten','visibility',v?'visible':'none');e.target.classList.toggle('an',v)};
+</script></body></html>

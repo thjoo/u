@@ -37,7 +37,7 @@
   .dr{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:11px solid #d9605a;display:inline-block;margin:0 1px}
   .ln{display:inline-block;width:24px;border-top:3px solid}
   .gb{display:inline-block;width:24px;height:8px;background:repeating-linear-gradient(90deg,#c8584f 0 1.4px,#e9e4da 1.4px 3.6px)}
-  .kasten-sym{background:var(--gelb);font:700 8px Montserrat,sans-serif;padding:1px 3px}
+  .kasten-sym{background:var(--gelb);color:#1a1a1a!important;text-shadow:none!important;font:700 8px Montserrat,sans-serif;padding:1px 3px}
   .bo{display:inline-block;width:13px;height:13px;border:1.7px solid #d9605a;border-radius:50%;position:relative;background:#fff}
   .bo:before,.bo:after{content:"";position:absolute;left:4.6px;top:.5px;width:1.7px;height:10px;background:#d9605a;transform:rotate(45deg)}.bo:after{transform:rotate(-45deg)}
   .knopfzeile{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap}
@@ -71,9 +71,22 @@
     h1{font-size:19px;margin-bottom:12px}
     #massstab{bottom:10px;left:10px}
   }
+
+@media (min-width:761px){
+ .var-links #seite{left:26px;right:auto;top:26px;bottom:calc(var(--bar) + 20px);width:250px;padding:0}
+ .var-links .gitter{grid-template-columns:1fr;gap:0}
+ .var-links .gruppe{margin:14px 0 3px;opacity:.6}
+ .var-links .daten{flex-direction:row;align-items:center;justify-content:flex-start;gap:12px;min-height:26px;padding:2px 0;background:transparent;border:0;color:#F2EFE9;text-shadow:0 0 4px rgba(0,0,0,.9)}
+ .var-links .daten:hover{border:0;color:#fff}.var-links .daten:active{background:transparent;opacity:.7}
+ .var-links .daten .sym{flex:0 0 26px;transform:none;filter:drop-shadow(0 0 2px rgba(0,0,0,.8))}
+ .var-links .daten b{font-size:13px;font-weight:400}
+ .var-links .daten.aus{opacity:.32}
+ .var-links .daten .ln[style*="#151515"]{box-shadow:0 0 0 1.5px rgba(244,241,232,.8)}
+ .var-links .daten .ln[style*="#333"]{border-color:#bdb8ae!important}
+}
 </style>
 </head>
-<body>
+<body data-var="links" class="var-links">
 <div id="karte"></div>
 <aside id="seite" aria-label="Ansichten und Daten">
   <button id="griff" aria-label="Kacheln ein- oder ausklappen"><span></span></button>
@@ -120,7 +133,8 @@ function kasten(){const s=12,c=document.createElement('canvas');c.width=c.height
 const SCHRIFT=['Montserrat SemiBold','Open Sans Semibold','Arial Unicode MS Regular'];
 const FETT=['Montserrat Bold','Open Sans Bold','Arial Unicode MS Bold'];
 const DOM={bsp:[],bohr:[]};
-function polster(){map.setPadding(handy()?{right:0}:{right:document.getElementById('seite').offsetWidth});}
+function polster(){if(handy()){map.setPadding({top:0,right:0,bottom:0,left:0});return;}const v=document.body.dataset.var,e=document.getElementById('seite');
+  const p={top:0,right:0,bottom:0,left:0};if(v==='unten')p.bottom=e.offsetHeight;else if(v==='links')p.left=e.offsetWidth+30;else p.right=e.offsetWidth+(v==='papier'?20:0);map.setPadding(p);}
 map.on('style.load',()=>{
   polster();
   map.addImage('dr-schicht',dreieck('#d9605a'),{pixelRatio:3.4});

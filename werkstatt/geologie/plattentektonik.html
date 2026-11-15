@@ -8,18 +8,19 @@
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;600&family=Inconsolata&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;600&family=Inconsolata:wght@400;600&display=swap" rel="stylesheet">
 <style>
   /* Lektionsdesign (Regelblatt Kapitelpräsentationen, Abschnitt 0): weiss, Tinte, schwarze Fussleiste, Montserrat 800, Open Sans, Inconsolata, keine Kästen */
   :root{--seite:330px;--bar:44px;--ink:#2B2727;--paper:#FAF7F2;--gelb:#f3d27a;--blau:#171782;--lilaweiss:#D9D6EE}
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;background:#fff;font-family:"Open Sans",system-ui,sans-serif;color:var(--ink);overflow:hidden}
-  #karte{position:absolute;top:0;bottom:var(--bar);left:0;right:var(--seite)}
-  #seite{position:absolute;top:0;bottom:var(--bar);right:0;width:var(--seite);background:#fff;overflow-y:auto;padding:3.5vh 20px 22px 20px}
-  h1{font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;line-height:1.15;margin:0 0 2.2vh}
+  #karte{position:absolute;top:0;bottom:var(--bar);left:0;right:0}
+  #seite{position:absolute;top:0;bottom:var(--bar);right:0;width:var(--seite);background:transparent;overflow-y:auto;padding:3.5vh 26px 22px 10px;color:#F2EFE9;font-family:Inconsolata,monospace;scrollbar-width:none}
+  #seite::-webkit-scrollbar{display:none}
+  h1{font-family:Montserrat,sans-serif;font-weight:800;color:#fff;font-size:20px;line-height:1.15;margin:0 0 2.2vh}
   .unter{display:none}
   .gitter{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
-  .gruppe{grid-column:1/-1;font-family:Inconsolata,monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;opacity:.55;margin:9px 0 0}
+  .gruppe{grid-column:1/-1;font-family:Inconsolata,monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.7;margin:9px 0 0}
   .gruppe:first-child{margin-top:0}
   .kachel{all:unset;box-sizing:border-box;cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent}
   /* Kachel: eingeschaltet weiss, ausgeschaltet blass; beim Drücken kurz ein warmer Grauton. Symbole frei, ohne Feld */
@@ -28,7 +29,7 @@
   .daten.aus{opacity:.38}
   .daten:hover{border-color:#9C978F}
   .daten:active{background:#ECE8E1}
-  .daten b{font-family:"Open Sans",sans-serif;font-weight:600;font-size:10.5px;line-height:1.18;display:block}
+  .daten b{font-family:Inconsolata,monospace;font-weight:600;font-size:12px;line-height:1.18;display:block}
   .daten small,.daten .zustand{display:none}
   .daten .sym{height:14px;display:flex;align-items:center;transform:scale(.85);transform-origin:left center}
   .daten:focus-visible{outline:2px solid var(--blau);outline-offset:1px}
@@ -40,8 +41,8 @@
   .bo{display:inline-block;width:13px;height:13px;border:1.7px solid #d9605a;border-radius:50%;position:relative;background:#fff}
   .bo:before,.bo:after{content:"";position:absolute;left:4.6px;top:.5px;width:1.7px;height:10px;background:#d9605a;transform:rotate(45deg)}.bo:after{transform:rotate(-45deg)}
   .knopfzeile{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap}
-  .knopfzeile button{all:unset;cursor:pointer;font-family:Inconsolata,monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1.5px solid var(--ink);padding-bottom:1px}
-  .quelle{font-size:10px;opacity:.5;margin-top:18px;line-height:1.5}
+  .knopfzeile button{all:unset;cursor:pointer;font-family:Inconsolata,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#fff;border-bottom:1.5px solid #fff;padding-bottom:1px}
+  .quelle{font-family:Inconsolata,monospace;font-size:11px;opacity:.6;margin-top:18px;line-height:1.45}
   .leiste{position:absolute;left:0;right:0;bottom:0;height:var(--bar);background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;font-family:Inconsolata,monospace;font-size:15px;letter-spacing:.18em;text-transform:uppercase;z-index:5}
   /* Beschriftungen auf der Karte (QGIS-Stil der Skriptkarten) */
   .lbl{font-family:Montserrat,sans-serif;font-weight:600;font-size:11px;color:#1a1a1a;background:var(--gelb);padding:1px 4px;border-radius:1px;white-space:nowrap;line-height:1.25;box-shadow:0 0 0 .5px rgba(0,0,0,.15);pointer-events:none}
@@ -62,7 +63,8 @@
     .gitter{grid-template-columns:repeat(3,minmax(0,1fr))}
     :root{--bar:0px}.leiste{display:none}
     #karte{right:0;bottom:var(--blatt,44vh)}
-    #seite{top:auto;bottom:0;width:auto;left:0;height:var(--blatt,44vh);border-top:1px solid #ECE9E4;padding:4px 18px 24px;transition:height .2s}
+    #seite{top:auto;bottom:0;width:auto;left:0;height:var(--blatt,44vh);border-top:1px solid #ECE9E4;padding:4px 18px 24px;transition:height .2s;background:#fff;color:var(--ink)}
+    h1{color:var(--ink)}.knopfzeile button{color:var(--ink);border-color:var(--ink)}
     body.klein #seite{height:52px;overflow:hidden}body.klein #karte{bottom:52px}
     #griff{display:block;width:100%;border:0;background:none;padding:8px 0 10px;cursor:pointer}
     #griff span{display:block;width:40px;height:4px;background:var(--ink);opacity:.25;margin:0 auto}
@@ -118,7 +120,9 @@ function kasten(){const s=12,c=document.createElement('canvas');c.width=c.height
 const SCHRIFT=['Montserrat SemiBold','Open Sans Semibold','Arial Unicode MS Regular'];
 const FETT=['Montserrat Bold','Open Sans Bold','Arial Unicode MS Bold'];
 const DOM={bsp:[],bohr:[]};
+function polster(){map.setPadding(handy()?{right:0}:{right:document.getElementById('seite').offsetWidth});}
 map.on('style.load',()=>{
+  polster();
   map.addImage('dr-schicht',dreieck('#d9605a'),{pixelRatio:3.4});
   map.addImage('dr-schild',dreieck('#4f5fd0'),{pixelRatio:3.4});
   map.addImage('dr-anderer',dreieck('#e3a23f'),{pixelRatio:3.4});
@@ -176,7 +180,7 @@ document.getElementById('alle-an').onclick=()=>DATEN.forEach(d=>d.id&&schalte(d,
 document.getElementById('alle-aus').onclick=()=>DATEN.forEach(d=>d.id&&schalte(d,false));
 document.getElementById('welt').onclick=()=>map.flyTo({center:[150,15],zoom:handy()?1:1.9,duration:2000});
 document.getElementById('griff').onclick=()=>{document.body.classList.toggle('klein');setTimeout(()=>map.resize(),220);};
-new ResizeObserver(()=>map.resize()).observe(document.getElementById('karte'));
+new ResizeObserver(()=>{map.resize();polster();}).observe(document.getElementById('karte'));
 function massstab(){const box=document.getElementById('massstab');const glob=map.getProjection().name==='globe'&&map.getZoom()<3;box.style.display=glob?'none':'block';if(glob)return;
   const ziel=Math.min(150,innerWidth*.3),y=map.getContainer().clientHeight-30;const a=map.unproject([20,y]),b=map.unproject([20+ziel,y]);const km=a.distanceTo(b)/1000;
   const st=[1,2,5,10,20,25,50,100,200,250,500,1000,2000,2500,5000];let g=st[0];for(const s of st){if(s<=km)g=s;}

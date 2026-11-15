@@ -8,69 +8,61 @@
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;600&family=Inconsolata&display=swap" rel="stylesheet">
 <style>
-  :root{--seite:370px;--gelb:#f3d27a;--tinte:#1d2324;--grau:#6b7375}
+  /* Lektionsdesign (Regelblatt Kapitelpräsentationen, Abschnitt 0): weiss, Tinte, schwarze Fussleiste, Montserrat 800, Open Sans, Inconsolata, keine Kästen */
+  :root{--seite:390px;--bar:44px;--ink:#2B2727;--paper:#FAF7F2;--gelb:#f3d27a;--blau:#171782;--lilaweiss:#D9D6EE}
   *{box-sizing:border-box}
-  html,body{margin:0;height:100%;background:#1c2a2e;font-family:"Open Sans",system-ui,sans-serif;color:var(--tinte)}
-  #karte{position:absolute;top:0;bottom:0;left:0;right:var(--seite)}
-  #seite{position:absolute;top:0;bottom:0;right:0;width:var(--seite);background:#f6f4ef;overflow-y:auto;padding:14px 14px 30px;border-left:1px solid #d8d4ca}
-  h1{font-family:Montserrat,sans-serif;font-size:17px;margin:2px 0 2px}
-  .unter{font-size:12px;color:var(--grau);margin:0 0 10px}
-  h2{font-family:Montserrat,sans-serif;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--grau);margin:16px 0 7px}
-  .gitter{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-  .gitter.drei{grid-template-columns:1fr 1fr 1fr}
-  .drei .ansicht img{aspect-ratio:4/3}
-  .drei .ansicht .t small{display:none}
-  .kachel{border:1px solid #d6d1c6;background:#fff;border-radius:7px;cursor:pointer;padding:0;text-align:left;font:inherit;color:inherit;overflow:hidden;
-          transition:box-shadow .15s,border-color .15s,opacity .15s;position:relative}
-  .kachel:hover{box-shadow:0 2px 8px rgba(0,0,0,.12)}
-  .kachel:focus-visible{outline:2px solid #26338f;outline-offset:1px}
-  .ansicht img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;background:#7fa3a1}
-  .ansicht .t{font-family:Montserrat,sans-serif;font-weight:600;font-size:12px;padding:5px 7px 6px;line-height:1.25}
-  .ansicht .t small{display:block;font-family:"Open Sans",sans-serif;font-weight:400;font-size:10.5px;color:var(--grau)}
-  .ansicht.aktiv{border-color:#26338f;box-shadow:0 0 0 2px #26338f}
-  .daten{display:flex;align-items:flex-start;gap:9px;padding:10px 9px;min-height:62px;font-size:12px;line-height:1.3}
-  .daten b{display:block;font-family:Montserrat,sans-serif;font-weight:600;font-size:12px;margin-bottom:2px}
-  .daten>span:last-child{min-width:0;hyphens:auto;-webkit-hyphens:auto;overflow-wrap:break-word}
-  .daten small{display:block;font-size:10.5px;color:var(--grau)}
-  .daten .sym{margin-top:2px}
+  html,body{margin:0;height:100%;background:#fff;font-family:"Open Sans",system-ui,sans-serif;color:var(--ink);overflow:hidden}
+  #karte{position:absolute;top:0;bottom:var(--bar);left:0;right:var(--seite)}
+  #seite{position:absolute;top:0;bottom:var(--bar);right:0;width:var(--seite);background:#fff;overflow-y:auto;padding:4.5vh 28px 28px 30px}
+  h1{font-family:Montserrat,sans-serif;font-weight:800;font-size:26px;line-height:1.1;margin:0 0 3.5vh}
+  .unter{display:none}
+  .gitter{display:grid;grid-template-columns:1fr 1fr;gap:0 22px}
+  .gruppe{grid-column:1/-1;font-family:Inconsolata,monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;opacity:.55;margin:22px 0 4px}
+  .gruppe:first-child{margin-top:0}
+  .kachel{all:unset;box-sizing:border-box;cursor:pointer;position:relative}
+  .daten{display:flex;align-items:center;gap:10px;padding:9px 0;min-height:44px;font-size:13.5px;line-height:1.25;border-bottom:1px solid #ECE9E4;transition:opacity .2s}
+  .daten b{font-weight:600}
+  .daten small{display:none}
   .daten .sym{flex:0 0 26px;display:flex;justify-content:center;align-items:center;height:16px}
-  .daten.aus{opacity:.42;background:#f1eee8}
-  .daten.aus:after{content:"aus";position:absolute;right:6px;top:4px;font-size:9px;color:var(--grau)}
-  .gruppe{grid-column:1/-1;font-size:11px;font-weight:600;color:#444;margin:6px 0 -2px}
+  .daten.aus{opacity:.3}
+  .daten.aus .sym{filter:grayscale(1)}
+  .daten:focus-visible{outline:2px solid var(--blau);outline-offset:2px}
+  .daten>span:last-child{min-width:0;hyphens:auto;-webkit-hyphens:auto;overflow-wrap:break-word}
   .dr{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:11px solid #d9605a;display:inline-block;margin:0 1px}
   .ln{display:inline-block;width:24px;border-top:2.5px solid}
   .gb{display:inline-block;width:24px;height:8px;background:repeating-linear-gradient(90deg,#c8584f 0 1.4px,#e9e4da 1.4px 3.6px)}
   .kasten-sym{background:var(--gelb);font:700 8px Montserrat,sans-serif;padding:1px 3px}
   .bo{display:inline-block;width:13px;height:13px;border:1.7px solid #d9605a;border-radius:50%;position:relative;background:#fff}
   .bo:before,.bo:after{content:"";position:absolute;left:4.6px;top:.5px;width:1.7px;height:10px;background:#d9605a;transform:rotate(45deg)}.bo:after{transform:rotate(-45deg)}
-  .knopfzeile{display:flex;gap:6px;margin-top:8px}
-  .knopfzeile button{flex:1;font:600 11px "Open Sans",sans-serif;padding:6px;border:1px solid #cfc9bd;background:#fff;border-radius:6px;cursor:pointer}
-  .quelle{font-size:10.5px;color:var(--grau);margin-top:18px;line-height:1.45}
-  /* Beschriftungen auf der Karte */
+  .knopfzeile{display:flex;gap:22px;margin-top:26px;flex-wrap:wrap}
+  .knopfzeile button{all:unset;cursor:pointer;font-family:Inconsolata,monospace;font-size:14px;letter-spacing:.08em;text-transform:uppercase;border-bottom:2px solid var(--ink);padding-bottom:1px}
+  .quelle{font-size:10.5px;opacity:.5;margin-top:30px;line-height:1.5}
+  .leiste{position:absolute;left:0;right:0;bottom:0;height:var(--bar);background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;font-family:Inconsolata,monospace;font-size:15px;letter-spacing:.18em;text-transform:uppercase;z-index:5}
+  /* Beschriftungen auf der Karte (QGIS-Stil der Skriptkarten) */
   .lbl{font-family:Montserrat,sans-serif;font-weight:600;font-size:11px;color:#1a1a1a;background:var(--gelb);padding:1px 4px;border-radius:1px;white-space:nowrap;line-height:1.25;box-shadow:0 0 0 .5px rgba(0,0,0,.15);pointer-events:none}
   .lbl.gross{font-size:15px;font-weight:700;padding:2px 6px;letter-spacing:.02em;text-align:center}
   .lbl.bsp{font-size:12px;padding:1px 5px;background:#fbe8b0}
   .bohrung{width:16px;height:16px;border:2px solid #d9605a;border-radius:50%;position:relative;background:rgba(255,255,255,.55)}
   .bohrung:before,.bohrung:after{content:"";position:absolute;left:5px;top:.5px;width:2px;height:12px;background:#d9605a;transform:rotate(45deg)}.bohrung:after{transform:rotate(-45deg)}
   .versteckt{display:none!important}
-  #massstab{position:absolute;left:14px;bottom:30px;font-size:12px;color:#222;background:rgba(246,244,239,.75);padding:3px 8px 5px;border-radius:4px}
-  #massstab .bar{position:relative;height:6px;border:1.3px solid #222;border-top:0}
-  #massstab .mitte{position:absolute;left:50%;top:0;height:6px;border-left:1.3px solid #222}
+  #massstab{position:absolute;left:16px;bottom:calc(var(--bar) + 16px);font-family:Inconsolata,monospace;font-size:13px;color:#fff;text-shadow:0 0 3px rgba(0,0,0,.8)}
+  #massstab .bar{position:relative;height:6px;border:1.3px solid #fff;border-top:0}
+  #massstab .mitte{position:absolute;left:50%;top:0;height:6px;border-left:1.3px solid #fff}
   #massstab .zahlen{position:relative;height:16px;margin-bottom:2px}
   #massstab .zahlen span{position:absolute;transform:translateX(-50%);white-space:nowrap}
   #massstab .zahlen span#m2{transform:translateX(-14px)}
   #griff{display:none}
-  /* Handy: Kacheln als Blatt unten */
   @media (max-width:760px){
+    :root{--bar:0px}.leiste{display:none}
     #karte{right:0;bottom:var(--blatt,44vh)}
-    #seite{top:auto;width:auto;left:0;height:var(--blatt,44vh);border-left:0;border-top:1px solid #d8d4ca;border-radius:12px 12px 0 0;padding-top:4px;transition:height .2s}
-    body.klein #seite{height:56px;overflow:hidden}body.klein #karte{bottom:56px}
-    #griff{display:block;width:100%;border:0;background:none;padding:6px 0 4px;cursor:pointer}
-    #griff span{display:block;width:44px;height:5px;border-radius:3px;background:#c9c3b6;margin:0 auto}
-    .gitter{grid-template-columns:1fr 1fr}
-    #massstab{bottom:10px;left:8px}
+    #seite{top:auto;bottom:0;width:auto;left:0;height:var(--blatt,44vh);border-top:1px solid #ECE9E4;padding:4px 18px 24px;transition:height .2s}
+    body.klein #seite{height:52px;overflow:hidden}body.klein #karte{bottom:52px}
+    #griff{display:block;width:100%;border:0;background:none;padding:8px 0 10px;cursor:pointer}
+    #griff span{display:block;width:40px;height:4px;background:var(--ink);opacity:.25;margin:0 auto}
+    h1{font-size:19px;margin-bottom:12px}
+    #massstab{bottom:10px;left:10px}
   }
 </style>
 </head>
@@ -81,9 +73,10 @@
   <h1>Plattentektonik und Vulkane</h1>
   <p class="unter">Kachel antippen, um Daten ein- oder auszublenden. Alle Daten gelten weltweit.</p>
   <div class="gitter" id="daten"></div>
-  <div class="knopfzeile"><button id="alle-an">alles an</button><button id="alle-aus">alles aus</button><button id="welt">Weltansicht</button></div>
+  <div class="knopfzeile"><button id="alle-an">alles an</button><button id="alle-aus">alles aus</button><button id="welt">Welt</button></div>
   <p class="quelle">Plattengrenzen: Bird (2003), PB2002; Zuordnung ozeanisch–ozeanisch von Hand. Vulkane: Smithsonian Global Volcanism Program, Holozän; Kilimandscharo, Teide und Yellowstone ergänzt. Grundkarte: eigener Mapbox-Style «Geologie». Bohrung Shenditake 1 ungefähr verortet.</p>
 </aside>
+<div class="leiste">Geologie – Plattentektonik und Vulkane</div>
 <div id="massstab"><div class="zahlen"><span style="left:0">0</span><span style="left:50%" id="m1"></span><span style="left:100%" id="m2"></span></div><div class="bar" id="bar"><div class="mitte"></div></div></div>
 <script>
 mapboxgl.accessToken='pk.eyJ1IjoidGhqbyIsImEiOiJjbXdmaWNjZGcwYTJxMnlyMWRvYWJldzQ2In0.ZouAwT9dC6s-qPSOy37grQ';
@@ -105,7 +98,7 @@ const DATEN=[
  {id:'diffus',t:'übrige Grenze (diffus)',info:'nicht im Skript, Konvergenz ohne klare Linie',sym:'<span class="ln" style="border-color:#333;border-top-width:1.5px;border-top-style:dashed"></span>',ebenen:['g-diffus']},
  {g:'Beschriftung'},
  {id:'laender',t:'Ländernamen',info:'deutsch, mehr beim Hineinzoomen',sym:'<span class="kasten-sym">CH</span>',ebenen:['laender']},
- {id:'beispiele',t:'Beispiele aus Aufgabe 4.7',info:'Ostafrika, Mittelatlantik, Anden, Himalaya, Alpen, Marianen, San Andreas',sym:'<span class="kasten-sym" style="background:#fbe8b0">ALPEN</span>',dom:'bsp'},
+ {id:'beispiele',t:'Beispiele (Aufgabe 4.7)',info:'Ostafrika, Mittelatlantik, Anden, Himalaya, Alpen, Marianen, San Andreas',sym:'<span class="kasten-sym" style="background:#fbe8b0">ALPEN</span>',dom:'bsp'},
  {id:'bohrung',t:'Bohrung Shenditake 1',info:'Tiefbohrung im Tarimbecken, ungefähr',sym:'<span class="bo"></span>',dom:'bohr'}];
 const GROSS=[{text:'GRAND CANYON',ll:[-112.1,36.1]},{text:'OSTAFRIKANISCHER<br>GRABENBRUCH',ll:[38.2,6.9]},
  {text:'MITTELATLANTISCHER RÜCKEN',ll:[-29.5,24],k:1},{text:'ANDEN',ll:[-67.5,-21],k:1},{text:'HIMALAYA',ll:[84.5,30.3],k:1},
@@ -168,7 +161,7 @@ for(const d of DATEN){const box=document.getElementById('daten');
   if(d.g){const g=document.createElement('div');g.className='gruppe';g.textContent=d.g;box.appendChild(g);continue;}
   zustand[d.id]=d.id!=='diffus';
   const k=document.createElement('button');k.className='kachel daten'+(zustand[d.id]?'':' aus');k.dataset.id=d.id;
-  k.setAttribute('aria-pressed',zustand[d.id]);k.innerHTML=`<span class="sym">${d.sym}</span><span><b>${d.t}</b>${d.info?`<small>${d.info}</small>`:''}</span>`;
+  k.setAttribute('aria-pressed',zustand[d.id]);k.title=d.info||'';k.innerHTML=`<span class="sym">${d.sym}</span><span><b>${d.t}</b></span>`;
   k.onclick=()=>{zustand[d.id]=!zustand[d.id];schalte(d,zustand[d.id]);};box.appendChild(k);}
 function schalte(d,an){zustand[d.id]=an;
   const k=document.querySelector(`.daten[data-id="${d.id}"]`);k.classList.toggle('aus',!an);k.setAttribute('aria-pressed',an);

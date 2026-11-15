@@ -18,30 +18,29 @@
   #seite{position:absolute;top:0;bottom:var(--bar);right:0;width:var(--seite);background:#fff;overflow-y:auto;padding:3.5vh 20px 22px 20px}
   h1{font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;line-height:1.15;margin:0 0 2.2vh}
   .unter{display:none}
-  .gitter{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
-  .gruppe{grid-column:1/-1;font-family:Inconsolata,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;opacity:.55;margin:12px 0 0}
+  .gitter{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+  .gruppe{grid-column:1/-1;font-family:Inconsolata,monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;opacity:.55;margin:9px 0 0}
   .gruppe:first-child{margin-top:0}
-  .kachel{all:unset;box-sizing:border-box;cursor:pointer;position:relative}
-  /* Kachel: weiss; eingeschaltet (gedrückt) leicht getönt; Symbole ohne Rand */
-  .daten{display:flex;flex-direction:column;justify-content:space-between;gap:6px;aspect-ratio:1.15/1;padding:8px 8px 7px;
-         background:#fff;color:var(--ink);border:1px solid #E4E0D9;transition:background .15s,opacity .15s}
-  .daten:not(.aus){background:#ECE8E1;border-color:#D9D4CB}
-  .daten.aus{opacity:.55}
-  .daten:hover{border-color:var(--ink)}
-  .daten b{font-family:"Open Sans",sans-serif;font-weight:600;font-size:11px;line-height:1.2;display:block}
-  .daten small{display:none}
-  .daten .sym{height:16px;display:flex;align-items:center}
-  .daten:focus-visible{outline:2px solid var(--blau);outline-offset:2px}
-  .daten>span:last-child{min-width:0;hyphens:auto;-webkit-hyphens:auto;overflow-wrap:break-word}
-  .daten .zustand{display:none}
+  .kachel{all:unset;box-sizing:border-box;cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent}
+  /* Kachel: eingeschaltet weiss, ausgeschaltet blass; beim Drücken kurz ein warmer Grauton. Symbole frei, ohne Feld */
+  .daten{display:flex;flex-direction:column;justify-content:space-between;gap:4px;min-height:56px;padding:6px 7px 6px;
+         background:#fff;color:var(--ink);border:1px solid #E4E0D9;transition:background .12s,opacity .15s}
+  .daten.aus{opacity:.38}
+  .daten:hover{border-color:#9C978F}
+  .daten:active{background:#ECE8E1}
+  .daten b{font-family:"Open Sans",sans-serif;font-weight:600;font-size:10.5px;line-height:1.18;display:block}
+  .daten small,.daten .zustand{display:none}
+  .daten .sym{height:14px;display:flex;align-items:center;transform:scale(.85);transform-origin:left center}
+  .daten:focus-visible{outline:2px solid var(--blau);outline-offset:1px}
+  .daten>span:last-child{min-width:0;hyphens:manual;overflow-wrap:break-word}
   .dr{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:11px solid #d9605a;display:inline-block;margin:0 1px}
   .ln{display:inline-block;width:24px;border-top:3px solid}
   .gb{display:inline-block;width:24px;height:8px;background:repeating-linear-gradient(90deg,#c8584f 0 1.4px,#e9e4da 1.4px 3.6px)}
   .kasten-sym{background:var(--gelb);font:700 8px Montserrat,sans-serif;padding:1px 3px}
   .bo{display:inline-block;width:13px;height:13px;border:1.7px solid #d9605a;border-radius:50%;position:relative;background:#fff}
   .bo:before,.bo:after{content:"";position:absolute;left:4.6px;top:.5px;width:1.7px;height:10px;background:#d9605a;transform:rotate(45deg)}.bo:after{transform:rotate(-45deg)}
-  .knopfzeile{display:flex;gap:18px;margin-top:16px;flex-wrap:wrap}
-  .knopfzeile button{all:unset;cursor:pointer;font-family:Inconsolata,monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;border-bottom:2px solid var(--ink);padding-bottom:1px}
+  .knopfzeile{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap}
+  .knopfzeile button{all:unset;cursor:pointer;font-family:Inconsolata,monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1.5px solid var(--ink);padding-bottom:1px}
   .quelle{font-size:10px;opacity:.5;margin-top:18px;line-height:1.5}
   .leiste{position:absolute;left:0;right:0;bottom:0;height:var(--bar);background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;font-family:Inconsolata,monospace;font-size:15px;letter-spacing:.18em;text-transform:uppercase;z-index:5}
   /* Beschriftungen auf der Karte (QGIS-Stil der Skriptkarten) */
@@ -59,8 +58,8 @@
   #massstab .zahlen span#m2{transform:translateX(-14px)}
   #griff{display:none}
   @media (max-width:760px){
-    .daten{aspect-ratio:auto;min-height:64px}
-    .gitter{grid-template-columns:1fr 1fr 1fr}
+    .daten{min-height:52px}
+    .gitter{grid-template-columns:repeat(3,minmax(0,1fr))}
     :root{--bar:0px}.leiste{display:none}
     #karte{right:0;bottom:var(--blatt,44vh)}
     #seite{top:auto;bottom:0;width:auto;left:0;height:var(--blatt,44vh);border-top:1px solid #ECE9E4;padding:4px 18px 24px;transition:height .2s}
@@ -94,13 +93,13 @@ const DATEN=[
  {id:'namen',t:'Namen bekannter Vulkane',info:'rund 30, mehr beim Hineinzoomen',sym:'<span class="kasten-sym">Ätna</span>',ebenen:['namen']},
  {g:'Divergenz'},
  {id:'graben',t:'Grabenbruch',info:'kontinentale Kruste bricht auseinander',sym:'<span class="gb"></span>',ebenen:['g-graben-band','g-graben']},
- {id:'ruecken',t:'Mittelozeanischer Rücken',info:'neue ozeanische Kruste entsteht',sym:'<span class="ln" style="border-color:#f07a3a"></span>',ebenen:['g-ruecken']},
+ {id:'ruecken',t:'Mittelozea\u00adnischer Rücken',info:'neue ozeanische Kruste entsteht',sym:'<span class="ln" style="border-color:#f07a3a"></span>',ebenen:['g-ruecken']},
  {g:'Konvergenz'},
- {id:'sub_ok',t:'Subduktion ozeanisch–kontinental',info:'Tiefseerinne und Gebirge am Kontinentrand',sym:'<span class="ln" style="border-color:#26338f"></span>',ebenen:['g-sub-ok']},
- {id:'sub_oo',t:'Subduktion ozeanisch–ozeanisch',info:'vulkanische Inselbögen',sym:'<span class="ln" style="border-color:#9b5de5"></span>',ebenen:['g-sub-oo']},
+ {id:'sub_ok',t:'Subduktion ozeanisch–kon\u00adtinental',info:'Tiefseerinne und Gebirge am Kontinentrand',sym:'<span class="ln" style="border-color:#26338f"></span>',ebenen:['g-sub-ok']},
+ {id:'sub_oo',t:'Subduktion ozeanisch–ozea\u00adnisch',info:'vulkanische Inselbögen',sym:'<span class="ln" style="border-color:#9b5de5"></span>',ebenen:['g-sub-oo']},
  {id:'kollision',t:'Kollision',info:'Kontinente treffen frontal aufeinander, Gebirgsbildung',sym:'<span class="ln" style="border-color:#151515;border-top-width:3.5px"></span>',ebenen:['g-kollision-rand','g-kollision']},
  {g:'Transformstörung'},
- {id:'transform',t:'Transformstörung',info:'Platten gleiten aneinander vorbei',sym:'<span class="ln" style="border-color:#e6c200;border-top-style:dashed"></span>',ebenen:['g-transform']},
+ {id:'transform',t:'Transform\u00adstörung',info:'Platten gleiten aneinander vorbei',sym:'<span class="ln" style="border-color:#e6c200;border-top-style:dashed"></span>',ebenen:['g-transform']},
  {id:'diffus',t:'übrige Grenze (diffus)',info:'nicht im Skript, Konvergenz ohne klare Linie',sym:'<span class="ln" style="border-color:#333;border-top-width:1.5px;border-top-style:dashed"></span>',ebenen:['g-diffus']},
  {g:'Beschriftung'},
  {id:'laender',t:'Ländernamen',info:'deutsch, mehr beim Hineinzoomen',sym:'<span class="kasten-sym">CH</span>',ebenen:['laender']},

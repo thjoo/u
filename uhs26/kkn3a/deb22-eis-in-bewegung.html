@@ -62,13 +62,64 @@ h2{font-family:'Montserrat',sans-serif;font-weight:800;font-size:4cqh}
 html,body{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .folie.beschrieben .seite{animation-play-state:running,paused}
 #tafel,#tafel2{position:fixed;left:0;top:0;width:100%;height:100%;z-index:20;pointer-events:none}#tafel2{z-index:21}
-#werkzeug{position:fixed;top:10px;right:10px;z-index:30;display:flex;gap:6px;align-items:center;padding:6px 8px;border-radius:24px;background:rgba(43,39,39,.82);opacity:.45;transition:opacity .2s}
-#werkzeug:hover,#werkzeug.aktiv{opacity:1}
-#werkzeug button{appearance:none;border:0;cursor:pointer;width:34px;height:34px;border-radius:50%;background:transparent;color:#FAF7F2;font:600 17px/34px 'Open Sans',sans-serif;display:flex;align-items:center;justify-content:center}
-#werkzeug button.an{background:rgba(250,247,242,.22)}
+#werkzeug{position:fixed;top:10px;right:10px;z-index:30;display:flex;gap:2px;align-items:center;padding:5px 7px;border-radius:16px;background:rgba(32,29,29,.62);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.1);opacity:.42;transition:opacity .25s}
+#werkzeug:hover,#werkzeug.aktiv,#werkzeug.nah,#werkzeug.offen{opacity:1}
+#werkzeug button{appearance:none;border:0;cursor:pointer;width:34px;height:34px;border-radius:10px;background:transparent;color:#FAF7F2;font:600 17px/34px 'Open Sans',sans-serif;display:flex;align-items:center;justify-content:center}
+#werkzeug button.an{background:rgba(250,247,242,.18)}
+#werkzeug svg{stroke-width:1.6}
+#werkzeug button:hover{background:rgba(250,247,242,.08)}#werkzeug button.an:hover{background:rgba(250,247,242,.18)}
 #werkzeug .farbe span{width:18px;height:18px;border-radius:50%;display:block;border:2px solid rgba(250,247,242,.6)}
 #werkzeug .farbe.an span{border-color:#FAF7F2;box-shadow:0 0 0 2px rgba(250,247,242,.35)}
-#werkzeug .trenn{width:1px;height:22px;background:rgba(250,247,242,.3)}
+#werkzeug .wz .punkt{width:15px;height:15px;border-radius:50%;display:block;border:2px solid rgba(250,247,242,.75);box-sizing:border-box}
+#werkzeug .wz .balken{width:9px;height:20px;border-radius:2px;display:block;transform:rotate(30deg)}
+#werkzeug .wz .laser{width:10px;height:10px;border-radius:50%;background:#ff3030;box-shadow:0 0 7px 2px rgba(255,48,48,.75);display:block}
+#stiftwahl{position:fixed;z-index:31;display:none;flex-direction:column;gap:4px;padding:6px;border-radius:14px;background:rgba(32,29,29,.82);-webkit-backdrop-filter:blur(18px) saturate(1.2);backdrop-filter:blur(18px) saturate(1.2);box-shadow:0 10px 30px rgba(0,0,0,.28),inset 0 0 0 .5px rgba(255,255,255,.1)}
+#stiftwahl .menu{flex-direction:column;align-items:stretch;gap:0}
+#stiftwahl .menu button{width:auto;height:auto;border-radius:9px;padding:9px 14px;font:600 14px/1.2 'Open Sans',sans-serif;letter-spacing:.01em;color:#FAF7F2;justify-content:flex-start;white-space:nowrap}
+#stiftwahl .menu button:hover{background:rgba(255,255,255,.08)}
+#stiftwahl .menu button[data-m=alle]{color:#FF8F86}
+#palette{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:30;display:flex;align-items:center;gap:6px;height:54px;padding:0 8px;border-radius:18px;background:rgba(32,29,29,.80);-webkit-backdrop-filter:blur(18px) saturate(1.2);backdrop-filter:blur(18px) saturate(1.2);box-shadow:0 10px 30px rgba(0,0,0,.22),inset 0 0 0 .5px rgba(255,255,255,.1);transition:transform .35s cubic-bezier(.2,.9,.3,1);touch-action:none;color:#FAF7F2}
+#palette.zu{transform:translate(-50%,46px)}
+#palette button{appearance:none;border:0;background:transparent;cursor:pointer;padding:0;color:inherit;-webkit-tap-highlight-color:transparent}
+#palette .griff{position:absolute;top:-16px;left:50%;width:48px;height:16px;margin-left:-24px}
+#palette .griff:after{content:'';position:absolute;left:12px;right:12px;top:8px;height:3px;border-radius:2px;background:rgba(250,247,242,.75);box-shadow:0 1px 3px rgba(0,0,0,.3)}
+#palette .links{display:flex;gap:0}
+#palette .links button,#palette .mehr{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;opacity:.78;transition:opacity .15s,background .15s}
+#palette .links button:hover,#palette .mehr:hover{opacity:1;background:rgba(255,255,255,.07)}
+#palette .links svg,#palette .mehr svg{width:18px;height:18px;stroke-width:1.5}
+#palette .trenn{width:1px;height:24px;background:rgba(250,247,242,.14);margin:0 4px}
+#palette .stifte{display:flex;gap:2px;height:54px;align-items:flex-end;overflow:visible;clip-path:inset(-30px -10px 0 -10px);padding:0 2px}
+#palette .wz{width:28px;height:52px;transform:translateY(17px);transition:transform .28s cubic-bezier(.2,.9,.3,1),opacity .2s;display:block;opacity:.62}
+#palette .wz:hover{opacity:.85}
+#palette .wz.an{transform:translateY(4px);opacity:1}
+#palette .wz svg{display:block;margin:0 auto}
+#farbraster{display:flex;gap:2px;align-items:center}
+#farbraster button{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+#farbraster span{width:14px;height:14px;border-radius:50%;display:block;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.25);transition:transform .18s}
+#farbraster button:hover span{transform:scale(1.12)}
+#farbraster [title=schwarz] span{box-shadow:inset 0 0 0 1px rgba(250,247,242,.5)}
+/* Hell auf hellen Folien, dunkel auf dunklen */
+#palette.hell{background:rgba(255,254,251,.97);color:#2B2727;box-shadow:0 10px 30px rgba(43,39,39,.16),inset 0 0 0 .5px rgba(43,39,39,.16)}
+#palette.hell .trenn{background:rgba(43,39,39,.14)}
+#palette.hell .links button:hover,#palette.hell .mehr:hover{background:rgba(43,39,39,.06)}
+#palette.hell .wz{opacity:.55}#palette.hell .wz.an{opacity:1}
+#palette.hell .griff:after{background:rgba(250,247,242,.95);box-shadow:0 0 0 .5px rgba(43,39,39,.25),0 1px 3px rgba(0,0,0,.2)}
+#palette.hell #farbraster span{box-shadow:inset 0 0 0 .5px rgba(0,0,0,.14)}
+#palette.hell #farbraster [title=schwarz] span{box-shadow:none}
+#palette.hell #farbraster button.an{box-shadow:inset 0 0 0 1.5px #2B2727}
+#stiftwahl.hell{background:rgba(255,254,251,.98);box-shadow:0 10px 30px rgba(43,39,39,.18),inset 0 0 0 .5px rgba(43,39,39,.16)}
+#stiftwahl.hell button.an{background:rgba(43,39,39,.08)}
+#stiftwahl.hell .menu button{color:#2B2727}#stiftwahl.hell .menu button:hover{background:rgba(43,39,39,.06)}
+#stiftwahl.hell .menu button[data-m=alle]{color:#C0392B}
+#farbraster button.an{box-shadow:inset 0 0 0 1.5px rgba(250,247,242,.9)}
+#farbraster button.an span{transform:scale(.78)}
+#stiftwahl.offen{display:flex}
+#stiftwahl div{display:flex;gap:4px;justify-content:center}
+#stiftwahl button{appearance:none;border:0;width:44px;height:44px;border-radius:50%;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer}
+#stiftwahl button.an{background:rgba(255,255,255,.12)}
+#stiftwahl i{display:block}
+#stiftwahl span{width:24px;height:24px;border-radius:50%;display:block;border:2px solid rgba(250,247,242,.6);box-sizing:border-box}
+#werkzeug .trenn{width:1px;height:20px;background:rgba(250,247,242,.16);margin:0 3px}
 /* 13.11.2026: Folientyp karte (Mapbox GL JS) */
 .folie.kartefolie{background:#0b1020}
 .kartenplatz{position:absolute;inset:0 0 var(--bar) 0}.kartenplatz .karte{position:absolute;inset:0}
@@ -114,8 +165,10 @@ html,body{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-to
 <section class="folie lila dunkel"><div class="mitte"><p class="satz">Wann wächst ein Gletscher, und wann schmilzt er weg?</p></div><div class="leiste"><span>Die Erde in Bewegung – Eis in Bewegung – Leitfrage</span><span>08 / 10</span></div></section>
 <section class="folie"><div class="rechts nurtext" style="left:12%;right:12%"><h2>Auftrag</h2><div class="dauer">5 min</div><p style="max-width:28em">Kahoot: Was weisst du jetzt über Gletscher? <a href="https://create.kahoot.it/details/42387896-910e-4a44-accd-6218d650e81e" target="_blank" rel="noopener">Kahoot&nbsp;öffnen&nbsp;↗</a></p></div><div class="leiste"><span>Die Erde in Bewegung – Eis in Bewegung</span><span>09 / 10</span></div></section>
 <section class="folie peach dunkel"><div class="mitte"><p class="satz">Ein Gletscher wächst, wenn im Nährgebiet mehr Schnee dazukommt, als im Zehrgebiet wegschmilzt.</p></div><div class="leiste"><span>Die Erde in Bewegung – Eis in Bewegung – Take-Home-Message</span><span>10 / 10</span></div></section>
-</div><canvas id="tafel"></canvas><canvas id="tafel2"></canvas><div id="werkzeug"><button data-a="home" title="Zur Lektionsübersicht">⌂</button><span class="trenn heim"></span><button data-a="zurueck" title="Zurück">‹</button><button data-a="weiter" title="Weiter">›</button><span class="trenn"></span><button data-a="stift" title="Stift für Finger und Maus (P). Der Apple Pencil schreibt immer.">✎</button><button class="farbe an" data-f="rot" title="Rot"><span style="background:#C0392B"></span></button><button class="farbe" data-f="blau" title="Blau"><span style="background:#4A6488"></span></button><button class="farbe" data-f="schwarz" title="Schwarz"><span style="background:#2B2727"></span></button><button class="farbe" data-f="marker" title="Leuchtmarker"><span style="background:rgba(255,212,0,.6)"></span></button><button data-a="radierer" title="Radierer: ganze Striche entfernen">⌫</button><button data-a="rueck" title="Rückgängig (Z)">↶</button><button data-a="loeschen" title="Alles auf dieser Folie löschen (C)">✕</button><button data-a="alle" title="Notizen auf allen Folien löschen"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v5.5M14 11v5.5"/></svg></button><span class="trenn"></span><button data-a="vollbild" title="Vollbild (F)">⛶</button></div><div id="fort"></div>
-<script>const TOKEN="pk.eyJ1IjoidGhqbyIsImEiOiJjbXdmaWNjZGcwYTJxMnlyMWRvYWJldzQ2In0.ZouAwT9dC6s-qPSOy37grQ";
+</div><canvas id="tafel"></canvas><canvas id="tafel2"></canvas><div id="stiftwahl"></div><div id="werkzeug"><button data-a="home" title="Zur Lektionsübersicht"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11 12 4.5l8.5 6.5"/><path d="M6 9.5V19.5h12V9.5"/></svg></button><span class="trenn heim"></span><button data-a="zurueck" title="Zurück"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></button><button data-a="weiter" title="Weiter"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5.5 16 12l-6.5 6.5"/></svg></button><span class="trenn"></span><button data-a="stift" title="Finger und Maus schreiben (P). Der Apple Pencil schreibt immer."><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 11V5.5a1.5 1.5 0 0 1 3 0V11"/><path d="M11.5 10V8.5a1.5 1.5 0 0 1 3 0V11"/><path d="M14.5 10a1.5 1.5 0 0 1 3 0v3.5a6 6 0 0 1-6 6h-.8a5.5 5.5 0 0 1-4.3-2.1L4 14.3a1.5 1.5 0 0 1 2.3-1.9L8.5 15"/></svg></button><span class="trenn"></span><button class="wz" data-w="stift" title="Stift. Nochmals tippen: Dicke und Farbe"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.6 18.6 18.2 9a2.1 2.1 0 0 0-3-3l-9.6 9.6"/><path d="M4.2 19.8l1.2-4.4 3.2 3.2z" style="fill:var(--f);stroke:var(--f)"/></svg></button><button class="wz" data-w="marker" title="Leuchtmarker. Nochmals tippen: Dicke und Farbe"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.8 17.6 19.4 10a2.1 2.1 0 0 0-3-3l-7.6 7.6"/><path d="M8.8 14.6l-3.3 3.3 2.9 2.9 3.4-3.2z" style="fill:var(--m);stroke:var(--m)"/></svg></button><button class="wz" data-w="laser" title="Laserpointer (L)"><span class="laser"></span></button><button class="wz" data-w="radierer" title="Radierer: ganze Striche entfernen"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 20 3.8 15.3a1.8 1.8 0 0 1 0-2.6l9-9a1.8 1.8 0 0 1 2.6 0l4.8 4.8a1.8 1.8 0 0 1 0 2.6L11 20z"/><path d="M8.2 8.4l7.4 7.4"/><path d="M8.5 20h11"/></svg></button><span class="trenn"></span><button data-a="rueck" title="Rückgängig (Z)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14.5 4 9.5l5-5"/><path d="M4 9.5h10.5a5 5 0 0 1 0 10H11"/></svg></button><button data-a="vor" title="Wiederholen"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14.5l5-5-5-5"/><path d="M20 9.5H9.5a5 5 0 0 0 0 10H13"/></svg></button><button data-a="mehr" title="Folie leeren, alle Notizen löschen"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><circle cx="5.5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18.5" cy="12" r="1.6"/></svg></button><span class="trenn"></span><button data-a="vollbild" title="Vollbild (F)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button></div><div id="fort"></div>
+<script>const TOKEN="pk.eyJ1IjoidGhqbyIsImEiOiJjbXdmaWNjZGcwYTJxMnlyMWRvYWJldzQ2In0.ZouAwT9dC6s-qPSOy37grQ";/* perfect-freehand 1.2.3, MIT License, Copyright (c) 2021 Stephen Ruiz Ltd, https://github.com/steveruizok/perfect-freehand */
+const PF=(()=>{const{PI:e}=Math,t=e+1e-4,n=.5,r=[1,1];function i(e,t,n,r=e=>e){return e*r(.5-t*(.5-n))}const{min:a}=Math;function o(e,t,n){let r=a(1,t/n);return a(1,e+(a(1,1-r)-e)*(r*.275))}function s(e){return[-e[0],-e[1]]}function c(e,t){return[e[0]+t[0],e[1]+t[1]]}function l(e,t,n){return e[0]=t[0]+n[0],e[1]=t[1]+n[1],e}function u(e,t){return[e[0]-t[0],e[1]-t[1]]}function d(e,t,n){return e[0]=t[0]-n[0],e[1]=t[1]-n[1],e}function f(e,t){return[e[0]*t,e[1]*t]}function p(e,t,n){return e[0]=t[0]*n,e[1]=t[1]*n,e}function m(e,t){return[e[0]/t,e[1]/t]}function h(e){return[e[1],-e[0]]}function g(e,t){let n=t[0];return e[0]=t[1],e[1]=-n,e}function ee(e,t){return e[0]*t[0]+e[1]*t[1]}function _(e,t){return e[0]===t[0]&&e[1]===t[1]}function v(e){return Math.hypot(e[0],e[1])}function y(e,t){let n=e[0]-t[0],r=e[1]-t[1];return n*n+r*r}function b(e){return m(e,v(e))}function x(e,t){return Math.hypot(e[1]-t[1],e[0]-t[0])}function S(e,t,n){let r=Math.sin(n),i=Math.cos(n),a=e[0]-t[0],o=e[1]-t[1],s=a*i-o*r,c=a*r+o*i;return[s+t[0],c+t[1]]}function C(e,t,n,r){let i=Math.sin(r),a=Math.cos(r),o=t[0]-n[0],s=t[1]-n[1],c=o*a-s*i,l=o*i+s*a;return e[0]=c+n[0],e[1]=l+n[1],e}function w(e,t,n){return c(e,f(u(t,e),n))}function te(e,t,n,r){let i=n[0]-t[0],a=n[1]-t[1];return e[0]=t[0]+i*r,e[1]=t[1]+a*r,e}function T(e,t,n){return c(e,f(t,n))}const E=[0,0],D=[0,0],O=[0,0];function k(e,n){let r=T(e,b(h(u(e,c(e,[1,1])))),-n),i=[],a=1/13;for(let n=a;n<=1;n+=a)i.push(S(r,e,t*2*n));return i}function A(e,n,r){let i=[],a=1/r;for(let r=a;r<=1;r+=a)i.push(S(n,e,t*r));return i}function j(e,t,n){let r=u(t,n),i=f(r,.5),a=f(r,.51);return[u(e,i),u(e,a),c(e,a),c(e,i)]}function M(e,n,r,i){let a=[],o=T(e,n,r),s=1/i;for(let n=s;n<1;n+=s)a.push(S(o,e,t*3*n));return a}function ne(e,t,n){return[c(e,f(t,n)),c(e,f(t,n*.99)),u(e,f(t,n*.99)),u(e,f(t,n))]}function N(e,t,n){return e===!1||e===void 0?0:e===!0?Math.max(t,n):e}function re(e,t,n){return e.slice(0,10).reduce((e,r)=>{let i=r.pressure;return t&&(i=o(e,r.distance,n)),(e+i)/2},e[0].pressure)}function P(e,n={}){let{size:r=16,smoothing:a=.5,thinning:f=.5,simulatePressure:m=!0,easing:_=e=>e,start:v={},end:b={},last:x=!1}=n,{cap:S=!0,easing:w=e=>e*(2-e)}=v,{cap:T=!0,easing:P=e=>--e*e*e+1}=b;if(e.length===0||r<=0)return[];let F=e[e.length-1].runningLength,I=N(v.taper,r,F),L=N(b.taper,r,F),R=(r*a)**2,z=[],B=[],V=re(e,m,r),H=i(r,f,e[e.length-1].pressure,_),U,W=e[0].vector,G=e[0].point,K=G,q=G,J=K,Y=!1;for(let n=0;n<e.length;n++){let{pressure:a}=e[n],{point:s,vector:h,distance:v,runningLength:b}=e[n],x=n===e.length-1;if(!x&&F-b<3)continue;f?(m&&(a=o(V,v,r)),H=i(r,f,a,_)):H=r/2,U===void 0&&(U=H);let S=b<I?w(b/I):1,T=F-b<L?P((F-b)/L):1;H=Math.max(.01,H*Math.min(S,T));let k=(x?e[n]:e[n+1]).vector,A=x?1:ee(h,k),j=ee(h,W)<0&&!Y,M=A!==null&&A<0;if(j||M){g(E,W),p(E,E,H);for(let e=0;e<=1;e+=.07692307692307693)d(D,s,E),C(D,D,s,t*e),q=[D[0],D[1]],z.push(q),l(O,s,E),C(O,O,s,t*-e),J=[O[0],O[1]],B.push(J);G=q,K=J,M&&(Y=!0);continue}if(Y=!1,x){g(E,h),p(E,E,H),z.push(u(s,E)),B.push(c(s,E));continue}te(E,k,h,A),g(E,E),p(E,E,H),d(D,s,E),q=[D[0],D[1]],(n<=1||y(G,q)>R)&&(z.push(q),G=q),l(O,s,E),J=[O[0],O[1]],(n<=1||y(K,J)>R)&&(B.push(J),K=J),V=a,W=h}let X=[e[0].point[0],e[0].point[1]],Z=e.length>1?[e[e.length-1].point[0],e[e.length-1].point[1]]:c(e[0].point,[1,1]),Q=[],$=[];if(e.length===1){if(!(I||L)||x)return k(X,U||H)}else{I||L&&e.length===1||(S?Q.push(...A(X,B[0],13)):Q.push(...j(X,z[0],B[0])));let t=h(s(e[e.length-1].vector));L||I&&e.length===1?$.push(Z):T?$.push(...M(Z,t,H,29)):$.push(...ne(Z,t,H))}return z.concat($,B.reverse(),Q)}const F=[0,0];function I(e){return e!=null&&e>=0}function L(e,t={}){let{streamline:i=.5,size:a=16,last:o=!1}=t;if(e.length===0)return[];let s=.15+(1-i)*.85,l=Array.isArray(e[0])?e:e.map(({x:e,y:t,pressure:r=n})=>[e,t,r]);if(l.length===2){let e=l[1];l=l.slice(0,-1);for(let t=1;t<5;t++)l.push(w(l[0],e,t/4))}l.length===1&&(l=[...l,[...c(l[0],r),...l[0].slice(2)]]);let u=[{point:[l[0][0],l[0][1]],pressure:I(l[0][2])?l[0][2]:.25,vector:[...r],distance:0,runningLength:0}],f=!1,p=0,m=u[0],h=l.length-1;for(let e=1;e<l.length;e++){let t=o&&e===h?[l[e][0],l[e][1]]:w(m.point,l[e],s);if(_(m.point,t))continue;let r=x(t,m.point);if(p+=r,e<h&&!f){if(p<a)continue;f=!0}d(F,m.point,t),m={point:t,pressure:I(l[e][2])?l[e][2]:n,vector:b(F),distance:r,runningLength:p},u.push(m)}return u[0].vector=u[1]?.vector||[0,0],u}function R(e,t={}){return P(L(e,t),t)}var z=R;return R})();
+
 const f=[...document.querySelectorAll('.folie')];let i=0,busy=false;const HOCH=document.body.classList.contains('hoch');
 // Karte (13.11.2026): eine Mapbox-Karte pro Deck. Weiter/zurück fliegt zuerst durch die Stationen.
 let KM=null,KD=null,KSTIL=null,st=0;
@@ -259,8 +312,15 @@ document.addEventListener('keydown',e=>{
 document.addEventListener('click',e=>{const k=e.target.closest('.vergleichknopf');if(!k)return;e.stopPropagation();vergleich(k.closest('.folie'),!k.dataset.an)},true);
 // 16.11.2026: desynchronized = geringe Verzögerung (Chrome/Brave); tafel2 zeigt die vorhergesagte Strichspitze
 const C=document.getElementById('tafel'),X=C.getContext('2d',{desynchronized:true})||C.getContext('2d'),C2=document.getElementById('tafel2'),X2=C2.getContext('2d',{desynchronized:true})||C2.getContext('2d'),WZ=document.getElementById('werkzeug');
-const FARBEN={rot:{c:'#C0392B'},blau:{c:'#4A6488'},schwarz:{c:'#2B2727'},marker:{c:'#FFD400',a:.38,m:1}};
-let modus=false,rad=false,farbe=FARBEN.rot,zug=null,penZeit=0;
+// 16.11.2026 Werkzeuge: Stift, Leuchtmarker, Pfeil, Laserpointer, Radierer.
+// Nochmals auf das aktive Werkzeug tippen = Feld mit Dicke und Farbe. Stift oder Marker am Ende kurz still halten = gerade Linie.
+const FARBEN={rot:'#E5484D',orange:'#F76B15',gruen:'#30A46C',blau:'#0090FF',violett:'#8E4EC6',schwarz:'#1C1C1C'};
+const MARKER={gelb:'#FFDD33',gruen:'#5EE6A0',blau:'#6CC4FF',rosa:'#FF8AD0'};
+const DICKEN={fein:.55,mittel:1,dick:1.9};
+let modus=false,wz='stift',zug=null,penZeit=0,stiftFarbe=FARBEN.blau,markerFarbe=MARKER.gelb,DK={stift:'mittel',marker:'mittel'};
+try{const w=JSON.parse(localStorage.getItem('stiftwahl')||'null');if(w){if(Object.values(FARBEN).includes(w.s))stiftFarbe=w.s;if(Object.values(MARKER).includes(w.m))markerFarbe=w.m;if(w.d)Object.keys(DK).forEach(k=>{if(DICKEN[w.d[k]])DK[k]=w.d[k]})}}catch(e){}
+function wahlSpeichern(){try{localStorage.setItem('stiftwahl',JSON.stringify({s:stiftFarbe,m:markerFarbe,d:DK}))}catch(e){}}
+const SW=document.getElementById('stiftwahl'),REDO={};
 const KEY='tafel:'+document.title;let S={};
 try{S=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){S={}}
 function speichern(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
@@ -269,48 +329,138 @@ function rahmen(){const r=f[i].getBoundingClientRect();return{left:r.left-CB.lef
 function abs(q,r){return[r.left+q[0]*r.width,r.top+q[1]*r.height,q[2]*r.width]}
 function segment(z,a,b,r,x){x=x||X;const A=abs(a,r),B=abs(b,r);x.globalAlpha=z.a||1;x.strokeStyle=ton(z.c);x.lineWidth=B[2];
  x.lineCap=x.lineJoin='round';x.beginPath();x.moveTo(A[0],A[1]);x.lineTo(B[0],B[1]);x.stroke();x.globalAlpha=1}
-function strich(z,r){const p=z.p;if(p.length===1){segment(z,p[0],p[0],r);return}
+// Pfeil im Filzstift-Stil: folgt der Handbewegung, offene Spitze aus zwei Strichen, leicht durchscheinend
+function pfeil(z,r,x){const P=z.p.map(q=>abs(q,r)),n=P.length,T=P[n-1],w=Math.max(P[0][2],2);
+ x.strokeStyle=x.fillStyle=ton(z.c);x.lineCap=x.lineJoin='round';x.lineWidth=w;x.globalAlpha=.86;
+ let lang=0;for(let k=1;k<n;k++)lang+=Math.hypot(P[k][0]-P[k-1][0],P[k][1]-P[k-1][1]);
+ if(n<2||lang<4){x.beginPath();x.arc(P[0][0],P[0][1],w/2,0,7);x.fill();x.globalAlpha=1;return}
+ x.beginPath();x.moveTo(P[0][0],P[0][1]);
+ for(let k=1;k<n-1;k++)x.quadraticCurveTo(P[k][0],P[k][1],(P[k][0]+P[k+1][0])/2,(P[k][1]+P[k+1][1])/2);
+ x.lineTo(T[0],T[1]);x.stroke();
+ const h=Math.min(lang*.6,Math.max(w*3.4,22)),ref=Math.min(h*.9,lang*.5);let Q=P[0],acc=0;
+ for(let k=n-1;k>0;k--){acc+=Math.hypot(P[k][0]-P[k-1][0],P[k][1]-P[k-1][1]);if(acc>=ref){Q=P[k-1];break}}
+ const dx=T[0]-Q[0],dy=T[1]-Q[1],L=Math.hypot(dx,dy)||1,ux=dx/L,uy=dy/L,a=.6;
+ for(const sg of[-1,1]){const c=Math.cos(a),s=Math.sin(a)*sg,vx=-ux*c+uy*s,vy=-uy*c-ux*s;
+  x.beginPath();x.moveTo(T[0]+vx*h,T[1]+vy*h);x.lineTo(T[0],T[1]);x.stroke()}
+ x.globalAlpha=1}
+// Stift wie auf dem iPad: Strich als gefüllte, geglättete Form, Breite folgt dem Druck (Maus und Finger: Tempo)
+function freiUmriss(z,r,extra,fertig){const pts=(extra&&extra.length?z.p.concat(extra):z.p).map(q=>[r.left+q[0]*r.width,r.top+q[1]*r.height,q[2]]),cr=z.v===3;
+ return PF(pts,{size:z.s*r.width,thinning:cr?.45:(z.t||.6),smoothing:.62,streamline:.32,simulatePressure:!z.dr,start:{cap:true,taper:cr&&!z.gerade?3:0},end:{cap:true,taper:cr&&!z.gerade?5:0},last:!!fertig})}
+// Wachsmalstift: Form mit Körnung füllen. Die Körnung hängt am Bildschirm, nicht am Strich, wie Papierstruktur.
+const KORN={};
+function korn(x,c){const key=c+(x===X?'a':'b');if(KORN[key])return KORN[key];const n=128,cv=document.createElement('canvas');cv.width=cv.height=n;
+ const g=cv.getContext('2d'),d=g.createImageData(n,n),h=parseInt(c.slice(1),16),R=h>>16&255,G=h>>8&255,B=h&255;let sd=1234567;
+ const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647,A=new Float32Array(n*n);for(let k=0;k<n*n;k++)A[k]=rnd();
+ for(let y=0;y<n;y++)for(let x0=0;x0<n;x0++){const k=y*n+x0,v=(A[k]*2+A[y*n+(x0+1)%n]+A[((y+1)%n)*n+x0])/4;
+  d.data[k*4]=R;d.data[k*4+1]=G;d.data[k*4+2]=B;d.data[k*4+3]=v<.3?0:v<.42?90:v<.55?180:240}
+ g.putImageData(d,0,0);return KORN[key]=x.createPattern(cv,'repeat')}
+function freiZeichnen(z,r,x,extra,fertig){const o=freiUmriss(z,r,extra,fertig),n=o.length;if(n<3)return;
+ x.globalAlpha=z.v===3?.92:1;x.fillStyle=z.v===3?korn(x,ton(z.c)):ton(z.c);x.beginPath();x.moveTo((o[0][0]+o[1][0])/2,(o[0][1]+o[1][1])/2);
+ for(let k=1;k<=n;k++){const a=o[k%n],b=o[(k+1)%n];x.quadraticCurveTo(a[0],a[1],(a[0]+b[0])/2,(a[1]+b[1])/2)}x.closePath();x.fill();x.globalAlpha=1}
+// Druck: Safari meldet zwischendurch 0, das wird übersprungen; dazu gleitender Mittelwert, damit die Breite ruhig bleibt
+let PRS=null;
+function roh(e,fr,vorschau){const r=fr||f[i].getBoundingClientRect();let pr=.5;
+ if(e.pointerType==='pen'){const roh0=e.pressure>0?e.pressure:(PRS==null?.5:PRS);pr=PRS==null?roh0:PRS+(roh0-PRS)*.3;if(!vorschau)PRS=pr}
+ return[(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height,pr]}
+function strich(z,r){const p=z.p;if(z.pf){pfeil(z,r,X);return}if(z.v){freiZeichnen(z,r,X,null,true);return}if(p.length===1){segment(z,p[0],p[0],r);return}
  if(z.m){X.globalAlpha=z.a;X.strokeStyle=ton(z.c);X.lineWidth=abs(p[0],r)[2];X.lineCap=X.lineJoin='round';X.beginPath();
   p.forEach((q,k)=>{const A=abs(q,r);k?X.lineTo(A[0],A[1]):X.moveTo(A[0],A[1])});X.stroke();X.globalAlpha=1;return}
  for(let k=1;k<p.length;k++)segment(z,p[k-1],p[k],r)}
-// Auf dunklen Folien: Schwarz wird Weiss, Graublau wird Hellblau
-function ton(c){return f[i].classList.contains('dunkel')?({'#2B2727':'#FFFFFF','#4A6488':'#9DB4E0'}[c]||c):c}
-function malen(){X.clearRect(0,0,CB.width,CB.height);WZ.classList.toggle('dunkel',f[i].classList.contains('dunkel'));f[i].classList.toggle('beschrieben',!!(S[K()]||[]).length);
- const r=rahmen();(S[K()]||[]).forEach(z=>strich(z,r))}
+// Auf dunklen Folien: Schwarz wird Weiss, Graublau und Grün werden heller
+function ton(c){return f[i].classList.contains('dunkel')?({'#1C1C1C':'#FFFFFF','#2B2727':'#FFFFFF','#4A6488':'#9DB4E0','#3A8F5C':'#7FD6A0','#8E4EC6':'#B98AE8'}[c]||c):c}
+// Stiftleiste unten (wie iPadOS): Stifte zeigen die aktuelle Farbe, rechts das Farbraster des aktiven Werkzeugs
+let altDunkel=null;
+function knoepfe(){WZ.style.setProperty('--f',stiftFarbe===FARBEN.schwarz?'#FAF7F2':stiftFarbe);WZ.style.setProperty('--m',markerFarbe);
+ WZ.querySelectorAll('[data-w]').forEach(b=>b.classList.toggle('an',b.dataset.w===wz))}
+function malen(){X.clearRect(0,0,CB.width,CB.height);const d=f[i].classList.contains('dunkel');WZ.classList.toggle('dunkel',d);if(d!==altDunkel){altDunkel=d;knoepfe()}
+ f[i].classList.toggle('beschrieben',!!(S[K()]||[]).length);const r=rahmen();(S[K()]||[]).forEach(z=>strich(z,r))}
 function groesse(){const d=devicePixelRatio||1;CB=C.getBoundingClientRect();C.width=C2.width=Math.round(CB.width*d);C.height=C2.height=Math.round(CB.height*d);
  X.setTransform(C.width/CB.width,0,0,C.height/CB.height,0,0);X2.setTransform(C.width/CB.width,0,0,C.height/CB.height,0,0);malen()}
 // 16.11.2026 Tempo: Rahmen nur einmal pro Strich messen, gezeichnet wird einmal pro Bildschirmbild (rAF)
-let FR=null,ZR=null,raf=0,VOR=[];
+let FR=null,ZR=null,raf=0,VOR=[],haltT=0,haltP=null;
 function vorLeeren(){X2.clearRect(0,0,CB.width,CB.height)}
+function breite(pr){const d=DICKEN[DK[wz]]||1;return wz==='marker'?.016*d:wz==='pfeil'?.0062*d:(.0012+.0032*pr)*d}
 function punkt(e,fr){const r=fr||f[i].getBoundingClientRect(),pr=e.pointerType==='pen'?(e.pressure||.5):.5;
- return[(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height,farbe.m?.016:.0012+.0032*pr]}
-function radieren(q){const vor=(S[K()]||[]).length;
- S[K()]=(S[K()]||[]).filter(z=>!z.p.some(p=>Math.hypot(p[0]-q[0],(p[1]-q[1])*9/16)<.014));if(S[K()].length!==vor)malen()}
-document.addEventListener('pointerdown',e=>{if(e.target.closest('#werkzeug,a,.vergleichknopf')||busy)return;
- const pen=e.pointerType==='pen';if(!pen&&!modus)return;e.preventDefault();if(KM&&istKarte(f[i]))KM.stop();if(pen)penZeit=Date.now();
+ return[(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height,breite(pr)]}
+function dSeg(a,b,q){const ax=a[0],ay=a[1]*.5625,dx=b[0]-ax,dy=b[1]*.5625-ay,qx=q[0],qy=q[1]*.5625,l=dx*dx+dy*dy;
+ let t=l?((qx-ax)*dx+(qy-ay)*dy)/l:0;t=Math.max(0,Math.min(1,t));return Math.hypot(qx-ax-t*dx,qy-ay-t*dy)}
+function getroffen(z,q){const p=z.p;if(p.length===1)return dSeg(p[0],p[0],q)<.014;for(let k=1;k<p.length;k++)if(dSeg(p[k-1],p[k],q)<.014)return true;return false}
+function radieren(q){const vor=(S[K()]||[]).length;S[K()]=(S[K()]||[]).filter(z=>!getroffen(z,q));if(S[K()].length!==vor)malen()}
+// Gerade Linie: Stift am Ende eines ungefähr geraden Strichs gut eine halbe Sekunde still halten
+function halten(q){if(!zug||zug.gerade||!zug.p)return;if(haltP&&Math.hypot(q[0]-haltP[0],(q[1]-haltP[1])*.5625)<.005)return;
+ haltP=q;clearTimeout(haltT);haltT=setTimeout(begradigen,550)}
+function begradigen(){const z=zug;if(!z||!z.p||z.gerade||z.p.length<4)return;const r=ZR,a=abs(z.p[0],r),b=abs(z.p[z.p.length-1],r),L=Math.hypot(b[0]-a[0],b[1]-a[1]);
+ if(L<40)return;let dev=0;for(const q of z.p){const P=abs(q,r);dev=Math.max(dev,Math.abs((b[0]-a[0])*(a[1]-P[1])-(a[0]-P[0])*(b[1]-a[1]))/L)}
+ if(dev>Math.max(14,L*.12))return;const w=z.v?z.s*.8:z.p.reduce((s,q)=>s+q[2],0)/z.p.length,e=z.p[z.p.length-1];
+ if(z.v===3){z.p=[[z.p[0][0],z.p[0][1],.6],[e[0],e[1],.6]];z.dr=1;z.gerade=1;z.g=2;VOR=[];vorLeeren();malen();return}delete z.v;
+ z.p=[[z.p[0][0],z.p[0][1],w],[e[0],e[1],w]];z.gerade=1;z.g=2;VOR=[];vorLeeren();malen()}
+// Laserpointer: leuchtende Spur, verblasst nach 0.7 s, wird nicht gespeichert
+let LZ=[],LP=null,lraf=0;const LDAUER=700;
+function laserPunkt(ev,neu){LP={x:ev.clientX-CB.left,y:ev.clientY-CB.top,t:performance.now(),neu:neu?1:0};LZ.push(LP);if(!lraf)lraf=requestAnimationFrame(laserLoop)}
+function laserLoop(){lraf=0;const t=performance.now(),aktiv=!!(zug&&zug.laser);LZ=LZ.filter(p=>t-p.t<LDAUER);
+ X2.clearRect(0,0,CB.width,CB.height);X2.lineCap=X2.lineJoin='round';
+ for(let k=1;k<LZ.length;k++){const a=LZ[k-1],b=LZ[k];if(b.neu)continue;const al=Math.max(0,1-(t-b.t)/LDAUER);
+  X2.beginPath();X2.moveTo(a.x,a.y);X2.lineTo(b.x,b.y);X2.globalAlpha=al*.28;X2.strokeStyle='#ff2020';X2.lineWidth=16;X2.stroke();
+  X2.globalAlpha=al;X2.strokeStyle='#ff4a4a';X2.lineWidth=5;X2.stroke()}
+ X2.globalAlpha=1;if(aktiv&&LP){X2.beginPath();X2.arc(LP.x,LP.y,7,0,7);X2.fillStyle='#ff2a2a';X2.shadowColor='rgba(255,40,40,.85)';X2.shadowBlur=16;X2.fill();X2.shadowBlur=0}
+ if(LZ.length||aktiv)lraf=requestAnimationFrame(laserLoop)}
+document.addEventListener('pointerdown',e=>{
+ if(SW.classList.contains('offen')&&!e.target.closest('#stiftwahl,#werkzeug,#palette')){wahlZu();penZeit=Date.now();e.preventDefault();return}
+ if(e.target.closest('#werkzeug,#stiftwahl,#palette,a,.vergleichknopf')||busy)return;
+ const pen=e.pointerType==='pen';if(!pen&&!modus)return;e.preventDefault();if(pen)penZeit=Date.now();
+ if(wz==='laser'){zug={laser:1};laserPunkt(e,1);return}
+ if(KM&&istKarte(f[i]))KM.stop();
  FR=f[i].getBoundingClientRect();ZR=rahmen();f[i].classList.add('beschrieben');
- const q=punkt(e,FR);if(rad){zug={rad:1};radieren(q);return}
- zug={c:farbe.c,a:farbe.a,m:farbe.m,p:[q],g:1};(S[K()]=S[K()]||[]).push(zug);
- if(!zug.m)segment(zug,q,q,ZR)},{passive:false});
-function zeichne(){raf=0;const z=zug;vorLeeren();if(!z||z.rad)return;if(z.m){malen();return}
+ const q=punkt(e,FR);if(wz==='radierer'){zug={rad:1};radieren(q);return}
+ if(wz==='pfeil'){zug={c:stiftFarbe,pf:1,p:[q],g:1};(S[K()]=S[K()]||[]).push(zug);REDO[K()]=[];haltP=q;clearTimeout(haltT);haltT=setTimeout(begradigen,550);return}
+ const mk=wz==='marker';zug=mk?{c:markerFarbe,a:.38,m:1,p:[q],g:1}:wz==='crayon'?{c:stiftFarbe,v:3,s:.0085*(DICKEN[DK.crayon]||1),dr:pen?1:0,p:[roh(e,FR)],g:1}:{c:stiftFarbe,v:2,t:.42,s:.0038*(DICKEN[DK.stift]||1),dr:pen?1:0,p:[(PRS=null,roh(e,FR))],g:1};(S[K()]=S[K()]||[]).push(zug);REDO[K()]=[];
+ haltP=q;clearTimeout(haltT);haltT=setTimeout(begradigen,550);
+ if(zug.v){if(!raf)raf=requestAnimationFrame(zeichne)}else if(!zug.m)segment(zug,q,q,ZR)},{passive:false});
+function zeichne(){raf=0;const z=zug;vorLeeren();if(!z||z.rad||z.laser)return;if(z.m||z.pf||z.gerade){malen();return}
+ if(z.v){freiZeichnen(z,ZR,X2,VOR,false);return}
  for(let k=Math.max(1,z.g);k<z.p.length;k++)segment(z,z.p[k-1],z.p[k],ZR);z.g=z.p.length;
  let v=z.p[z.p.length-1];VOR.forEach(q=>{segment(z,v,q,ZR,X2);v=q})}
 document.addEventListener('pointermove',e=>{if(!zug)return;e.preventDefault();
- const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];
- (evs.length?evs:[e]).forEach(ev=>{const q=punkt(ev,FR);if(zug.rad){radieren(q);return}zug.p.push(q)});
- VOR=[];if(!zug.rad&&!zug.m&&e.getPredictedEvents){try{VOR=e.getPredictedEvents().slice(-2).map(ev=>punkt(ev,FR))}catch(err){}}
- if(!zug.rad&&!raf)raf=requestAnimationFrame(zeichne)},{passive:false});
-function ende(e){if(e.pointerType==='pen')penZeit=Date.now();if(zug){VOR=[];if(raf){cancelAnimationFrame(raf);zeichne()}vorLeeren();zug=null;speichern()}}
+ const c=e.getCoalescedEvents?e.getCoalescedEvents():[],evs=c.length?c:[e];
+ if(zug.laser){evs.forEach(ev=>laserPunkt(ev,0));return}
+ if(zug.rad){evs.forEach(ev=>radieren(punkt(ev,FR)));return}
+ if(zug.gerade){const q=zug.v?roh(evs[evs.length-1],FR):punkt(evs[evs.length-1],FR);q[2]=zug.p[0][2];zug.p[1]=q;if(!raf)raf=requestAnimationFrame(zeichne);return}
+ evs.forEach(ev=>zug.p.push(zug.v?roh(ev,FR):punkt(ev,FR)));halten(zug.p[zug.p.length-1]);
+ VOR=[];if(!zug.m&&!zug.pf&&e.getPredictedEvents){try{VOR=e.getPredictedEvents().slice(-2).map(ev=>zug.v?roh(ev,FR,1):punkt(ev,FR))}catch(err){}}
+ if(!raf)raf=requestAnimationFrame(zeichne)},{passive:false});
+function ende(e){if(e.pointerType==='pen')penZeit=Date.now();clearTimeout(haltT);haltP=null;if(!zug)return;const z=zug;
+ if(z.laser){zug=null;if(!lraf)lraf=requestAnimationFrame(laserLoop);return}
+ VOR=[];if(raf){cancelAnimationFrame(raf);zeichne()}vorLeeren();zug=null;if(z.v)freiZeichnen(z,ZR,X,null,true);
+ if(z.pf&&!z.p.some(q=>Math.hypot(q[0]-z.p[0][0],(q[1]-z.p[0][1])*.5625)>.008)){S[K()].pop();malen()}
+ speichern()}
 // iPad: Touch-Standardverhalten des Pencils (Handschrift/Scribble, Lupe, Scrollen) unterdrücken, sonst kommt die Tinte verzögert
 function stiftTouch(e){const t=e.touches[0]||e.changedTouches[0];if(!t)return;
- if(e.type==='touchstart'&&e.target.closest&&e.target.closest('#werkzeug,a,button,.vergleichknopf,.kartenauftrag'))return;
+ if(e.type==='touchstart'&&e.target.closest&&e.target.closest('#werkzeug,#stiftwahl,#palette,a,button,.vergleichknopf,.kartenauftrag'))return;
  if(t.touchType==='stylus'||modus)e.preventDefault()}
 document.addEventListener('touchstart',stiftTouch,{passive:false});document.addEventListener('touchmove',stiftTouch,{passive:false});
 document.addEventListener('pointerup',ende);document.addEventListener('pointercancel',ende);
 function stiftModus(an){modus=an;WZ.querySelector('[data-a=stift]').classList.toggle('an',an);WZ.classList.toggle('aktiv',an)}
-function waehle(btn){WZ.querySelectorAll('.farbe,[data-a=radierer]').forEach(b=>b.classList.remove('an'));btn.classList.add('an')}
-function rueckgaengig(){if((S[K()]||[]).length){S[K()].pop();speichern();malen()}}
-function loeschen(){if((S[K()]||[]).length){S[K()]=[];speichern();malen()}}
+// Feld für die Dicke (über dem aktiven Werkzeug) und Menü «…»
+function wahlZu(){SW.classList.remove('offen');SW.innerHTML='';WZ.classList.remove('offen')}
+// iPad hat kein Hover: nach dem Antippen bleibt die Leiste kurz voll sichtbar
+let nahT=0;WZ.addEventListener('pointerdown',()=>{WZ.classList.add('nah');clearTimeout(nahT);nahT=setTimeout(()=>WZ.classList.remove('nah'),3500)});
+function ueber(btn){SW.classList.add('offen');WZ.classList.add('offen');const r=btn.getBoundingClientRect(),sw=SW.offsetWidth;
+ SW.style.left=Math.max(8,Math.min(innerWidth-sw-8,r.left+r.width/2-sw/2))+'px';SW.style.top=(WZ.getBoundingClientRect().bottom+8)+'px'}
+function wahlOeffnen(w,btn){const mk=w==='marker',fa=mk?MARKER:FARBEN,akt=mk?markerFarbe:stiftFarbe,gr={fein:5,mittel:9,dick:15};
+ let h='<div>'+Object.keys(DICKEN).map(d=>'<button data-d="'+d+'" class="'+(DK[w]===d?'an':'')+'" title="'+d+'"><i style="width:'+(mk?gr[d]+3:gr[d])+'px;height:'+(mk?18:gr[d])+'px;border-radius:'+(mk?'3px':'50%')+';background:'+(mk?markerFarbe:'#FAF7F2')+'"></i></button>').join('')+'</div>';
+ h+='<div>'+Object.entries(fa).map(([n,c])=>'<button data-c="'+c+'" class="farbe'+(c===akt?' an':'')+'" title="'+n+'"><span style="background:'+c+'"></span></button>').join('')+'</div>';
+ SW.innerHTML=h;SW.dataset.w=w;ueber(btn)}
+function menuOeffnen(btn){SW.innerHTML='<div class="menu"><button data-m="folie">Folie leeren</button><button data-m="alle">Alle Notizen löschen</button></div>';SW.dataset.w='';ueber(btn)}
+SW.addEventListener('click',e=>{e.stopPropagation();const b=e.target.closest('button');if(!b)return;const w=SW.dataset.w;
+ if(b.dataset.d){DK[w]=b.dataset.d;wahlSpeichern()}
+ if(b.dataset.c){if(w==='marker')markerFarbe=b.dataset.c;else stiftFarbe=b.dataset.c;wahlSpeichern()}
+ if(b.dataset.m==='folie')loeschen();if(b.dataset.m==='alle'){wahlZu();alleLoeschen();return}
+ knoepfe();wahlZu()});
+function werkzeug(w,btn){if(wz===w&&btn&&w in DK){if(SW.classList.contains('offen')&&SW.dataset.w===w)wahlZu();else wahlOeffnen(w,btn);return}
+ wz=w;wahlZu();knoepfe()}
+function rueckgaengig(){const L=S[K()]||[];if(L.length){(REDO[K()]=REDO[K()]||[]).push(L.pop());speichern();malen()}}
+function wiederholen(){const R=REDO[K()]||[];if(R.length){(S[K()]=S[K()]||[]).push(R.pop());speichern();malen()}}
+function loeschen(){if((S[K()]||[]).length){S[K()]=[];REDO[K()]=[];speichern();malen()}}
 function alleLoeschen(){if(!Object.values(S).some(z=>z&&z.length))return;
  if(!confirm('Notizen auf allen Folien löschen?'))return;S={};speichern();malen()}
 const DE=document.documentElement,VB=DE.requestFullscreen||DE.webkitRequestFullscreen;
@@ -320,20 +470,21 @@ if(!VB||navigator.standalone)WZ.querySelector('[data-a=vollbild]').style.display
 // Übersicht gibt es nur auf der Website (GitHub Pages), nicht lokal oder im Claude-Artifact
 if(!/github\.io$/.test(location.hostname))WZ.querySelectorAll('[data-a=home],.heim').forEach(b=>b.style.display='none');
 WZ.addEventListener('click',e=>{e.stopPropagation();const b=e.target.closest('button');if(!b)return;const a=b.dataset.a;
- if(b.dataset.f){farbe=FARBEN[b.dataset.f];rad=false;waehle(b)}
- else if(a==='stift')stiftModus(!modus);
- else if(a==='radierer'){rad=true;waehle(b)}
+ if(b.dataset.w){werkzeug(b.dataset.w,b);return}
+ const menuOffen=SW.classList.contains('offen')&&!SW.dataset.w;wahlZu();
+ if(a==='stift')stiftModus(!modus);
  else if(a==='rueck')rueckgaengig();
- else if(a==='loeschen')loeschen();
- else if(a==='alle')alleLoeschen();
+ else if(a==='vor')wiederholen();
+ else if(a==='mehr'){if(!menuOffen)menuOeffnen(b)}
  else if(a==='home')location.href='./';
  else if(a==='vollbild')vollbild();
  else if(a==='zurueck')geh(i-1);
  else if(a==='weiter')geh(i+1)});
 document.addEventListener('keydown',e=>{const k=e.key.toLowerCase();
- if(k==='p')stiftModus(!modus);if(k==='z')rueckgaengig();if(k==='c')loeschen();if(k==='f')vollbild()});
+ if(k==='p')stiftModus(!modus);if(k==='z')rueckgaengig();if(k==='c')loeschen();if(k==='f')vollbild();
+ if(k==='l')werkzeug(wz==='laser'?'stift':'laser');if(k==='escape')wahlZu()});
 ['fullscreenchange','webkitfullscreenchange'].forEach(ev=>document.addEventListener(ev,()=>setTimeout(groesse,120)));
-document.addEventListener('click',e=>{if(e.target.closest('a,#werkzeug'))return;
+document.addEventListener('click',e=>{if(e.target.closest('a,#werkzeug,#stiftwahl,#palette'))return;
  if(modus||Date.now()-penZeit<700)return;geh(e.clientX<innerWidth*.25?i-1:i+1)});
 addEventListener('resize',groesse);if(window.visualViewport)visualViewport.addEventListener('resize',groesse);
 if(window.ResizeObserver)new ResizeObserver(groesse).observe(C);

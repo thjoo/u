@@ -33,8 +33,16 @@ h2{font-family:'Montserrat',sans-serif;font-weight:800;font-size:4cqh}
 .dauer{font-family:'Inconsolata',monospace;font-size:2.1cqh;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin:1.6cqh 0 4cqh}
 .rechts.nurtext h2{font-size:6cqh}.rechts.nurtext .dauer{font-size:2.6cqh}.rechts.nurtext p{font-size:4cqh}
 .rechts p{font-size:2.25cqh;line-height:1.5}
+.aplinks{position:absolute;left:7%;right:34%;top:9%;bottom:12%}.aplinks .dauer{margin:1.2cqh 0 2.6cqh}
+.aplinks .apunter{font-size:2.5cqh;line-height:1.5;margin:0 0 2.4cqh}
+.ap{display:flex;gap:2.4cqh;font-size:2.5cqh;line-height:1.45;margin:0 0 2.2cqh}.ap .apmin{flex:0 0 7.5em;font-family:'Inconsolata',monospace;font-size:2.1cqh;letter-spacing:.08em;text-transform:uppercase;opacity:.6;padding-top:.35cqh}
+.apqr{position:absolute;right:7%;top:24%;width:22%;text-align:center;color:inherit;text-decoration:none}.apqr img{width:100%;image-rendering:pixelated}.apqr span{display:block;font-size:1.8cqh;line-height:1.45;opacity:.7;margin-top:1.4cqh}
 .ks{position:absolute;top:3.5%;bottom:calc(var(--bar) + 3.5%);left:50%;transform:translateX(-50%);aspect-ratio:1600/1132;max-width:94%}
 .ks img{position:absolute;inset:0;width:100%;height:100%;display:block}
+/* 12.11.2026: Folientyp animation, inline-SVG mit CSS-Animation (startet bei jedem Aufruf der Folie neu) */
+/* 12.11.2026: Filme im Vollbild, ohne Fussleiste, schwarz hinterlegt, Bild füllt die Folie */
+.folie.filmfolie{background:#000}.voll{position:absolute;inset:0}.voll video{width:100%;height:100%;object-fit:cover;display:block}
+.anim{position:absolute;inset:0 0 var(--bar) 0}.anim svg{width:100%;height:100%;display:block}
 .ks-blatt{position:absolute;inset:0;transform:translateX(120%);background:rgba(255,255,255,.3);outline:1px solid rgba(43,39,39,.3);box-shadow:0 6px 18px rgba(0,0,0,.14)}
 .folie.an .ks-blatt{animation:reinsliden 3.2s cubic-bezier(.25,.8,.3,1) .8s forwards,ablegen .6s ease 4s forwards}
 @keyframes reinsliden{from{transform:translateX(120%)}to{transform:translateX(0)}}
@@ -42,14 +50,18 @@ h2{font-family:'Montserrat',sans-serif;font-weight:800;font-size:4cqh}
 .seite.medien{bottom:auto;aspect-ratio:16/9;top:50%;translate:0 -60%;border-bottom:1px solid #e6e3df;background:#000}
 .seite.medien video,.seite.medien img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .vorschau img{opacity:0;animation:vorschau var(--dauer) linear infinite}
+.vorschau img:only-child{opacity:1;animation:none}
 @keyframes vorschau{0%{opacity:0;transform:scale(1)}4%{opacity:1}25%{opacity:1}29%{opacity:0;transform:scale(1.06)}100%{opacity:0}}
 .link{display:inline-block;align-self:flex-start;font-family:'Inconsolata',monospace;font-size:3cqh;letter-spacing:.06em;color:var(--ink);text-decoration:none;border-bottom:2px solid var(--ink);margin:1.6cqh 0 4cqh}
 .link:hover{opacity:.6}
 .vtitel{font-weight:600}
 .rechts p.klein{font-size:2.6cqh;opacity:.6;margin-top:.8cqh}
+/* Video (12.11.2026): optionaler Beobachtungsauftrag als Text, Titel und Quelle in einer Zeile kleiner als der Auftragstext, Link klein */
+.rechts p.vangabe{font-size:1.8cqh;line-height:1.45;opacity:.7;margin-top:2.4cqh}
+.link.vlink{font-size:1.8cqh;border-bottom-width:1px;margin:1.2cqh 0 0}
 html,body{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .folie.beschrieben .seite{animation-play-state:running,paused}
-#tafel{position:fixed;left:0;top:0;width:100%;height:100%;z-index:20;pointer-events:none}
+#tafel,#tafel2{position:fixed;left:0;top:0;width:100%;height:100%;z-index:20;pointer-events:none}#tafel2{z-index:21}
 #werkzeug{position:fixed;top:10px;right:10px;z-index:30;display:flex;gap:6px;align-items:center;padding:6px 8px;border-radius:24px;background:rgba(43,39,39,.82);opacity:.45;transition:opacity .2s}
 #werkzeug:hover,#werkzeug.aktiv{opacity:1}
 #werkzeug button{appearance:none;border:0;cursor:pointer;width:34px;height:34px;border-radius:50%;background:transparent;color:#FAF7F2;font:600 17px/34px 'Open Sans',sans-serif;display:flex;align-items:center;justify-content:center}
@@ -57,6 +69,39 @@ html,body{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-to
 #werkzeug .farbe span{width:18px;height:18px;border-radius:50%;display:block;border:2px solid rgba(250,247,242,.6)}
 #werkzeug .farbe.an span{border-color:#FAF7F2;box-shadow:0 0 0 2px rgba(250,247,242,.35)}
 #werkzeug .trenn{width:1px;height:22px;background:rgba(250,247,242,.3)}
+/* 13.11.2026: Folientyp karte (Mapbox GL JS) */
+.folie.kartefolie{background:#0b1020}
+.kartenplatz{position:absolute;inset:0 0 var(--bar) 0}.kartenplatz .karte{position:absolute;inset:0}
+.kartenplatz:not(:has(.karte)){display:flex;align-items:center;justify-content:center;color:#D9D6EE;font-size:3cqh}
+#kartevorrat{position:fixed;left:-300vw;top:0;width:min(100vw,calc(100vh*16/9));height:calc(min(100vh,calc(100vw*9/16)) - var(--bar))}
+#kartevorrat .karte{position:absolute;inset:0}
+.kartetext{position:absolute;left:4cqw;bottom:calc(var(--bar) + 5cqh);max-width:40cqw;padding:2.2cqh 2.6cqh;background:rgba(250,247,242,.94);color:var(--ink);font-weight:600;font-size:3cqh;line-height:1.4;opacity:0;transform:translateY(1.5cqh);transition:opacity .6s ease,transform .6s ease;z-index:4;pointer-events:none}
+.kartetext.sicht{opacity:1;transform:none;transition-delay:.4s}
+/* 15.11.2026: Querschnitt unten, Profillinie auf der Karte */
+.kartefolie.mitprofil .kartetext{bottom:calc(var(--bar) + 29cqh)}
+.profil{position:absolute;left:4cqw;right:4cqw;bottom:calc(var(--bar) + 3cqh);height:24cqh;background:rgba(250,247,242,.93);color:var(--ink);opacity:0;transform:translateY(2cqh);transition:opacity .6s ease,transform .6s ease;z-index:4;pointer-events:none;font-family:'Inconsolata',monospace}
+.profil.sicht{opacity:1;transform:none;transition-delay:.5s}
+.profil svg{position:absolute;inset:3.2cqh 2cqw 3.4cqh 2cqw;width:calc(100% - 4cqw);height:calc(100% - 6.6cqh);overflow:visible}
+.profil .pk{position:absolute;top:.8cqh;font-size:1.9cqh;letter-spacing:.06em;text-transform:uppercase}
+.profil .pk.l{left:2cqw}.profil .pk.r{right:2cqw}
+.profil .pf{position:absolute;bottom:.7cqh;left:2cqw;right:2cqw;display:flex;justify-content:space-between;font-size:1.7cqh;opacity:.7}
+.kartenauftrag{position:absolute;left:2cqw;top:2.5cqh;width:34cqw;border:2px solid var(--ink);background:rgba(255,255,255,.9);color:var(--ink);z-index:4;cursor:pointer}
+.kartenauftrag .bt{background:var(--ink);color:#fff;font-family:'Montserrat',sans-serif;font-weight:700;font-size:2.3cqh;padding:.8cqh 1.6cqh}
+.kartenauftrag .bb{padding:1.3cqh 1.6cqh .6cqh;font-family:'Open Sans',sans-serif;font-size:2.05cqh;line-height:1.38}
+.kartenauftrag .bb>p{margin:0 0 .8cqh}
+.kartenauftrag .li{display:flex;gap:.9cqh;margin:0 0 .8cqh}
+.kartenauftrag .li>.m{flex:0 0 auto;font-weight:600}
+.kartenauftrag.zu .bb{display:none}
+.vergleichknopf{position:absolute;right:2cqw;bottom:calc(var(--bar) + 7cqh + 17cqh);display:none;appearance:none;border:2px solid var(--ink);background:rgba(250,247,242,.9);color:var(--ink);font:600 2.1cqh/1 'Inconsolata',monospace;letter-spacing:.06em;padding:1.1cqh 1.6cqh;cursor:pointer;z-index:6}
+.vergleichknopf.sicht{display:block}
+.vergleichknopf.an{background:var(--ink);color:#FAF7F2}
+.kartequelle{position:absolute;right:1cqw;top:1cqh;font-size:1.5cqh;color:#fff;opacity:.75;text-shadow:0 1px 2px #000;z-index:4}
+.kartenplatz .mapboxgl-ctrl-logo{opacity:.6}
+.kartelegende{position:absolute;right:2cqw;bottom:calc(var(--bar) + 7cqh);width:24cqw;padding:1.4cqh 1.6cqh 1.2cqh;background:rgba(250,247,242,.72);font-family:'Inconsolata',monospace;color:var(--ink);z-index:4;pointer-events:none}
+.kartelegende .lt{font-family:'Inconsolata',monospace;font-weight:600;font-size:1.9cqh;line-height:1.3;margin-bottom:1cqh}
+.kartelegende .lb{height:1.6cqh}
+.kartelegende .lq{font-size:1.3cqh;opacity:.7;margin-top:.8cqh}
+.kartelegende .lz{display:flex;justify-content:space-between;font-family:'Inconsolata',monospace;font-size:1.6cqh;margin-top:.5cqh}
 #fort{position:fixed;left:0;bottom:0;height:3px;background:var(--peach);transition:.2s;z-index:9}
 </style></head><body class="sanft"><div id="buehne">
 <section class="folie an"><div class="mitte"><h1 class="titel">Abstimmung 29. November: Meine Meinung zur Vorlage</h1></div><div class="leiste"><span>Freifach Politik – Abstimmung 29. November</span><span>01 / 08</span></div></section>
@@ -67,15 +112,140 @@ html,body{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-to
 <section class="folie"><div class="rechts nurtext" style="left:12%;right:12%"><h2>Auftrag</h2><div class="dauer">8 min</div><p style="max-width:28em">Zu zweit:<br>1. Stimmt das Ergebnis mit deiner ersten Meinung überein?<br>2. Hat dich eine Frage überrascht?<br>3. Bist du bestärkt, oder brauchst du noch Zeit zum Nachdenken?</p></div><div class="leiste"><span>Freifach Politik – Abstimmung 29. November</span><span>06 / 08</span></div></section>
 <section class="folie"><div class="rechts nurtext" style="left:12%;right:12%"><h2>Auftrag</h2><div class="dauer">7 min</div><p style="max-width:28em">Ein Satz in der Runde zu Frage 1 oder 2. Dein App-Resultat gehört dir, du zeigst es nur, wenn du willst.</p></div><div class="leiste"><span>Freifach Politik – Abstimmung 29. November</span><span>07 / 08</span></div></section>
 <section class="folie peach dunkel"><div class="mitte"><p class="satz">Wer abstimmen darf: Das Couvert liegt im Briefkasten. Am 30. November schauen wir, wie die Schweiz entschieden hat.</p></div><div class="leiste"><span>Freifach Politik – Abstimmung 29. November – Take-Home-Message</span><span>08 / 08</span></div></section>
-</div><canvas id="tafel"></canvas><div id="werkzeug"><button data-a="home" title="Zur Lektionsübersicht">⌂</button><span class="trenn heim"></span><button data-a="zurueck" title="Zurück">‹</button><button data-a="weiter" title="Weiter">›</button><span class="trenn"></span><button data-a="stift" title="Stift für Finger und Maus (P). Der Apple Pencil schreibt immer.">✎</button><button class="farbe an" data-f="rot" title="Rot"><span style="background:#C0392B"></span></button><button class="farbe" data-f="blau" title="Blau"><span style="background:#4A6488"></span></button><button class="farbe" data-f="schwarz" title="Schwarz"><span style="background:#2B2727"></span></button><button class="farbe" data-f="marker" title="Leuchtmarker"><span style="background:rgba(255,212,0,.6)"></span></button><button data-a="radierer" title="Radierer: ganze Striche entfernen">⌫</button><button data-a="rueck" title="Rückgängig (Z)">↶</button><button data-a="loeschen" title="Alles auf dieser Folie löschen (C)">✕</button><button data-a="alle" title="Notizen auf allen Folien löschen"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v5.5M14 11v5.5"/></svg></button><span class="trenn"></span><button data-a="vollbild" title="Vollbild (F)">⛶</button></div><div id="fort"></div>
+</div><canvas id="tafel"></canvas><canvas id="tafel2"></canvas><div id="werkzeug"><button data-a="home" title="Zur Lektionsübersicht">⌂</button><span class="trenn heim"></span><button data-a="zurueck" title="Zurück">‹</button><button data-a="weiter" title="Weiter">›</button><span class="trenn"></span><button data-a="stift" title="Stift für Finger und Maus (P). Der Apple Pencil schreibt immer.">✎</button><button class="farbe an" data-f="rot" title="Rot"><span style="background:#C0392B"></span></button><button class="farbe" data-f="blau" title="Blau"><span style="background:#4A6488"></span></button><button class="farbe" data-f="schwarz" title="Schwarz"><span style="background:#2B2727"></span></button><button class="farbe" data-f="marker" title="Leuchtmarker"><span style="background:rgba(255,212,0,.6)"></span></button><button data-a="radierer" title="Radierer: ganze Striche entfernen">⌫</button><button data-a="rueck" title="Rückgängig (Z)">↶</button><button data-a="loeschen" title="Alles auf dieser Folie löschen (C)">✕</button><button data-a="alle" title="Notizen auf allen Folien löschen"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v5.5M14 11v5.5"/></svg></button><span class="trenn"></span><button data-a="vollbild" title="Vollbild (F)">⛶</button></div><div id="fort"></div>
 <script>
 const f=[...document.querySelectorAll('.folie')];let i=0,busy=false;const HOCH=document.body.classList.contains('hoch');
+// Karte (13.11.2026): eine Mapbox-Karte pro Deck. Weiter/zurück fliegt zuerst durch die Stationen.
+let KM=null,KD=null,KSTIL=null,st=0;
+function istKarte(s){return !!s&&s.classList.contains('kartefolie')}
+function stationen(s){return JSON.parse(s.dataset.stationen)}
+function K(){return istKarte(f[i])?i+'.'+st:i}
+function karteText(s){const t=s.querySelector('.kartetext'),x=stationen(s)[st].text||'';t.classList.remove('sicht');t.offsetHeight;t.textContent=x;if(x)t.classList.add('sicht')}
+let UEBWARTE=false;
+function ueberlagerung(s){if(!KM)return;
+ // 16.11.2026: Stil noch am Laden (Kacheln) -> nicht aufgeben, sondern beim nächsten Ruhezustand nachholen
+ if(!(KM.isStyleLoaded()||(KM.style&&KM.style._loaded))){if(!UEBWARTE){UEBWARTE=true;setTimeout(()=>{UEBWARTE=false;if(f[i]===s)ueberlagerung(s)},300)}return}const u=s&&istKarte(s)?JSON.parse(s.dataset.ueb||'{}'):{};
+ if(KM.getLayer('ueb')&&KM.getSource('ueb').tiles&&KM.getSource('ueb').tiles[0]!==u.kacheln){KM.removeLayer('ueb');KM.removeSource('ueb')}
+ if(s&&istKarte(s)&&!KM.getSource('ueb'))delete s.dataset.uebAkt;
+ if(u.kacheln&&!KM.getSource('ueb')){KM.addSource('ueb',{type:'raster',tiles:[u.kacheln],tileSize:256,maxzoom:u.max_zoom||7});
+  KM.addLayer({id:'ueb',type:'raster',source:'ueb',paint:{'raster-opacity':0,'raster-opacity-transition':{duration:1500},'raster-fade-duration':0}},KM.getLayer('orte')?'orte':undefined)}
+ if(KM.getLayer('ueb'))KM.setPaintProperty('ueb','raster-opacity',u.kacheln?(u.deckkraft||.7):0)}
+// Eigene Beschriftung (15.11.2026): Ortsnamen der Grundkarte aus, nur die Orte aus der Spezifikation, in Thierrys Schrift
+function beschriftung(){if(!KM)return;const s=f.find(istKarte);const b=s?JSON.parse(s.dataset.beschr||'{}'):{};if(!b.orte)return;
+ try{KM.setConfigProperty('basemap','showPlaceLabels',false)}catch(e){}
+ try{if(KM.getSource('orte'))return;
+ KM.addSource('orte',{type:'geojson',data:{type:'FeatureCollection',features:b.orte.map(o=>({type:'Feature',properties:{n:o.name,t:o.typ||'land',z:o.ab||0},geometry:{type:'Point',coordinates:o.ort}}))}});
+ const ff=[(b.schrift||'Open Sans')+' Semibold','Arial Unicode MS Regular'];
+ KM.addLayer({id:'orte',type:'symbol',source:'orte',filter:['>=',['zoom'],['get','z']],layout:{'text-field':['get','n'],'text-font':ff,
+  'text-size':['interpolate',['linear'],['zoom'],1,['match',['get','t'],'land',11,'stadt',12,10],6,['match',['get','t'],'land',16,'stadt',13,14]],
+  'text-transform':['match',['get','t'],'land','uppercase','none'],'text-letter-spacing':['match',['get','t'],'land',0.12,0.02],'text-allow-overlap':false,'text-padding':4},
+  paint:{'text-color':['match',['get','t'],'meer','#D9E8F2','#FFFFFF'],'text-halo-color':'rgba(20,20,30,0.85)','text-halo-width':1.3,'text-halo-blur':0.4}})}catch(e){console.log('beschriftung',e)}}
+// Satellit pro Station (15.11.2026): Rasterebene über der Grundkarte, blendet nach dem Anflug weich ein
+function satEbene(){if(!KM||!KM.isStyleLoaded()||KM.getLayer('sat')||!f.some(s=>istKarte(s)&&stationen(s).some(o=>o.satellit)))return;KM.addSource('sat',{type:'raster',tiles:['https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.jpg90?access_token='+mapboxgl.accessToken],tileSize:256,maxzoom:19,attribution:'© Mapbox © Maxar'});
+ KM.addLayer({id:'sat',type:'raster',source:'sat',paint:{'raster-opacity':0,'raster-fade-duration':0}},KM.getLayer('ueb')?'ueb':(KM.getLayer('g-diffus')?'g-diffus':(KM.getLayer('profillinie-rand')?'profillinie-rand':undefined)))}
+function satDeckkraft(w,ms){if(!KM||!KM.getLayer('sat'))return;KM.setPaintProperty('sat','raster-opacity-transition',{duration:ms,delay:0});KM.setPaintProperty('sat','raster-opacity',w);
+ // Beschriftungen der Grundkarte (z.B. Höhenkoten) liegen sonst über dem Satellitenbild: mit ausblenden
+ for(const l of KM.getStyle().layers)if(l.type==='symbol'){try{KM.setPaintProperty(l.id,'text-opacity-transition',{duration:ms,delay:0});KM.setPaintProperty(l.id,'text-opacity',1-w)}catch(e){}}}
+// Flug (15.11.2026, zweite Fassung): Mapbox misst den Zoom ab der Geländehöhe unter der Kartenmitte. Über Bergen hüpft die
+// Kamera darum auf und ab. Lösung: Gelände vor dem Abflug weich absenken, flach fliegen, nach der Ankunft Berge wieder
+// aufrichten (1.6 s) und erst dann das Satellitenbild einblenden. Sprung statt Flug beim Betreten der Folie.
+const UEBERHOEHUNG=1.3;let FLUG=0,TERR=UEBERHOEHUNG;
+function gelaende(ziel,ms,nr,fertig){const von=TERR,t0=performance.now();
+ function schritt(t){if(FLUG!==nr)return;const x=Math.min(1,(t-t0)/ms),e=x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;TERR=von+(ziel-von)*e;
+  try{KM.setTerrain({source:'dem',exaggeration:TERR})}catch(err){}if(x<1)requestAnimationFrame(schritt);else if(fertig)fertig()}
+ if(ms<=0){TERR=ziel;try{KM.setTerrain({source:'dem',exaggeration:ziel})}catch(err){}if(fertig)fertig();return}requestAnimationFrame(schritt)}
+// Plattengrenzen und Querschnitt (15.11.2026)
+const GFARBE={graben:'#c8584f',ruecken:'#f07a3a',sub_ok:'#26338f',sub_oo:'#9b5de5',kollision:'#151515',transform:'#ffe14d',diffus:'#2a2a2a'};
+const GNAME={graben:'Grabenbruch',ruecken:'Mittelozean. Rücken',sub_ok:'Subduktion ozean.–kont.',sub_oo:'Subduktion ozean.–ozean.',kollision:'Kollision',transform:'Transformstörung',diffus:'übrige Grenze'};
+function grenzenEbene(){if(!KM)return;try{if(!KM.getStyle())return}catch(e){return}
+ if(!KM.getSource('profillinie')){KM.addSource('profillinie',{type:'geojson',data:{type:'FeatureCollection',features:[]}});
+  KM.addLayer({id:'profillinie-rand',type:'line',source:'profillinie',filter:['==',['geometry-type'],'LineString'],paint:{'line-color':'#151515','line-width':5,'line-opacity':.55}});
+  KM.addLayer({id:'profillinie',type:'line',source:'profillinie',filter:['==',['geometry-type'],'LineString'],paint:{'line-color':'#ffffff','line-width':2.5,'line-dasharray':[2,1.2]}});
+  KM.addLayer({id:'profilpunkte',type:'circle',source:'profillinie',filter:['==',['geometry-type'],'Point'],paint:{'circle-radius':5,'circle-color':'#ffffff','circle-stroke-color':'#151515','circle-stroke-width':2}})}
+ const s=f.find(x=>istKarte(x)&&x.dataset.grenzen);if(!s||KM.getSource('grenzen'))return;
+ KM.addSource('grenzen',{type:'geojson',data:JSON.parse(s.dataset.grenzen)});
+ const B=(k,extra)=>Object.assign({type:'line',source:'grenzen',filter:['==',['get','k'],k],layout:{'line-join':'round'}},extra),w=(a,b)=>['interpolate',['linear'],['zoom'],1,a,6,b],vor=KM.getLayer('profillinie-rand')?'profillinie-rand':undefined;
+ [B('diffus',{id:'g-diffus',paint:{'line-color':'#2a2a2a','line-width':w(.6,1.2),'line-opacity':.7,'line-dasharray':[5,4]}}),
+  B('transform',{id:'g-transform',paint:{'line-color':'#ffe14d','line-width':w(1.2,2.4),'line-dasharray':[2.5,1.5]}}),
+  B('ruecken',{id:'g-ruecken',paint:{'line-color':'#f07a3a','line-width':w(1.4,3)}}),
+  B('graben',{id:'g-graben-band',paint:{'line-color':'#e9e4da','line-width':w(4,9),'line-opacity':.75}}),
+  B('graben',{id:'g-graben',paint:{'line-color':'#c8584f','line-width':w(4,9),'line-opacity':.9,'line-dasharray':[0.16,0.28]}}),
+  B('kollision',{id:'g-kollision-rand',paint:{'line-color':'#f4f1e8','line-width':w(3,6),'line-opacity':.6}}),
+  B('kollision',{id:'g-kollision',paint:{'line-color':'#151515','line-width':w(1.6,3.2)}}),
+  B('sub_ok',{id:'g-sub-ok',paint:{'line-color':'#26338f','line-width':w(1.5,3.2)}}),
+  B('sub_oo',{id:'g-sub-oo',paint:{'line-color':'#9b5de5','line-width':w(1.5,3.2)}})].forEach(l=>KM.addLayer(l,vor))}
+function zahl(n){return Math.round(n).toLocaleString('de-CH').replace(/’/g,"'")}
+function profil(s){const o=stationen(s)[st],box=s.querySelector('.profil');if(!box)return;const p=o.profil;
+ if(KM&&KM.getSource('profillinie'))KM.getSource('profillinie').setData(p?{type:'FeatureCollection',features:[{type:'Feature',geometry:{type:'LineString',coordinates:p.linie}},{type:'Feature',geometry:{type:'Point',coordinates:p.linie[0]}},{type:'Feature',geometry:{type:'Point',coordinates:p.linie[1]}}]}:{type:'FeatureCollection',features:[]});
+ box.classList.remove('sicht');if(!p){return}
+ const W=1000,H=200,h=p.h,mx=Math.max(...h,0),mn=Math.min(...h,0),y=v=>H-(v-mn)/((mx-mn)||1)*H,X=k=>k/(h.length-1)*W,y0=y(0);
+ let pts=h.map((v,k)=>X(k).toFixed(1)+','+y(v).toFixed(1)).join(' ');
+ let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">`;
+ if(mn<0)svg+=`<rect x="0" y="${y0}" width="${W}" height="${H-y0}" fill="#9DB4E0" opacity=".55"/>`;
+ svg+=`<polygon points="0,${H} ${pts} ${W},${H}" fill="#2B2727"/><line x1="0" x2="${W}" y1="${y0}" y2="${y0}" stroke="#2B2727" stroke-width="1" stroke-dasharray="4 4" opacity=".5" vector-effect="non-scaling-stroke"/>`;
+ for(const g of p.grenzen||[]){const gx=g.x*W;svg+=`<line x1="${gx}" x2="${gx}" y1="-6" y2="${H}" stroke="${GFARBE[g.k]||'#000'}" stroke-width="3" vector-effect="non-scaling-stroke"${g.k==='kollision'?'':''}/>`}
+ svg+='</svg>';
+ let lab='';for(const g of p.grenzen||[]){lab+=`<div style="position:absolute;top:.6cqh;left:calc(2cqw + ${g.x} * (100% - 4cqw));transform:translateX(${g.x>.8?'-100%':g.x<.2?'0':'-50%'});font-size:1.8cqh;white-space:nowrap;background:${GFARBE[g.k]};color:${['transform','ruecken'].includes(g.k)?'#2B2727':'#fff'};padding:0 .6cqh">${GNAME[g.k]||g.k}</div>`}
+ box.innerHTML=`<div class="pk l">${p.links}</div><div class="pk r">${p.rechts}</div>${lab}${svg}<div class="pf"><span>${zahl(p.km)} km</span><span>höchster Punkt ${zahl(mx)} m${mn<0?' · tiefster '+zahl(mn)+' m':''} · stark überhöht</span></div>`;
+ box.offsetHeight;box.classList.add('sicht')}
+// 16.11.2026: Stationsfeld "vergleich": {"zeit": "2023-08-01T00:00:00Z", "jahr": "2023", "standard": "2024"} zeigt einen Knopf, der die WMS-Ebene auf einen anderen Monat umschaltet
+function vergleich(s,an){const o=stationen(s)[st]||{},v=o.vergleich,k=s.querySelector('.vergleichknopf');if(!k)return;
+ const u=JSON.parse(s.dataset.ueb||'{}');an=!!(v&&an);
+ if(KM&&KM.getSource('ueb')&&u.kacheln){const url=an?u.kacheln.replace(/TIME=[^&]*/,'TIME='+v.zeit):u.kacheln;
+  if((s.dataset.uebAkt||u.kacheln)!==url){s.dataset.uebAkt=url;try{const vor=KM.getLayer('orte')?'orte':undefined;KM.removeLayer('ueb');KM.removeSource('ueb');
+   KM.addSource('ueb',{type:'raster',tiles:[url],tileSize:256,maxzoom:u.max_zoom||7});KM.addLayer({id:'ueb',type:'raster',source:'ueb',paint:{'raster-opacity':u.deckkraft||.7,'raster-fade-duration':0}},vor)}catch(e){console.log('vergleich',e)}}}
+ const jahr=an?v.jahr:(v&&v.standard)||'2024',alt=an?(v.standard||'2024'):v&&v.jahr;
+ s.querySelectorAll('.kartelegende .lt,.kartelegende .lq').forEach(e=>{if(!e.dataset.orig)e.dataset.orig=e.textContent;e.textContent=an?e.dataset.orig.replaceAll(v.standard||'2024',v.jahr):e.dataset.orig});
+ k.classList.toggle('sicht',!!v);k.classList.toggle('an',an);if(v)k.textContent=an?'Zurück zu '+(v.standard||'2024'):'Vergleich '+v.jahr;k.dataset.an=an?'1':''}
+function karteFlug(s,springen){const o=stationen(s)[st];if(!KM)return;KM.stop();const nr=++FLUG;vergleich(s,false);
+ try{grenzenEbene()}catch(e){console.log('grenzen',e)}satEbene();let ziel={center:o.center,zoom:o.zoom,pitch:o.pitch||0,bearing:o.bearing||0,padding:{top:0,bottom:0,left:0,right:0}};
+ // Profilstationen: Profillinie läuft von links nach rechts über den Bildschirm, über dem Querschnitt, ohne Drehen
+ if(o.profil){const A=o.profil.linie[0],Bp=o.profil.linie[1],r=Math.PI/180,az=Math.atan2(Math.sin((Bp[0]-A[0])*r)*Math.cos(Bp[1]*r),Math.cos(A[1]*r)*Math.sin(Bp[1]*r)-Math.sin(A[1]*r)*Math.cos(Bp[1]*r)*Math.cos((Bp[0]-A[0])*r))/r;
+  const H=KD.clientHeight||600,pad={top:H*.08,bottom:H*.40,left:KD.clientWidth*.08,right:KD.clientWidth*.08},br=az-90,pt=o.pitch!=null?Math.min(o.pitch,50):40;
+  try{const c=KM.cameraForBounds([[Math.min(A[0],Bp[0]),Math.min(A[1],Bp[1])],[Math.max(A[0],Bp[0]),Math.max(A[1],Bp[1])]],{padding:pad,bearing:br,pitch:pt});if(c)ziel={center:c.center,zoom:c.zoom,pitch:pt,bearing:br,padding:{top:0,bottom:0,left:0,right:0}}}catch(e){}}
+ // 16.11.2026: "schwenken": {"grad": 8, "dauer": 120000} dreht nach der Ankunft gaaanz langsam weiter (linear, stoppt beim Weiterschalten)
+ const drehen=()=>{if(o.profil||FLUG!==nr||!istKarte(f[i]))return;if(o.drehen)KM.easeTo({bearing:KM.getBearing()+90,duration:30000,easing:t=>t,essential:true});
+  else if(o.schwenken){const w=o.schwenken===true?{}:o.schwenken;KM.easeTo({bearing:KM.getBearing()+(w.grad||8),duration:w.dauer||120000,easing:t=>t,essential:true})}};
+ const ankunft=()=>{if(FLUG!==nr)return;gelaende(UEBERHOEHUNG,1600,nr,()=>{if(o.satellit&&KM.getPaintProperty('sat','raster-opacity')<1)satDeckkraft(1,2200);setTimeout(drehen,300)})};
+ if(springen){satDeckkraft(0,0);KM.jumpTo(ziel);gelaende(UEBERHOEHUNG,0,nr);if(o.satellit)satDeckkraft(1,1200);setTimeout(drehen,300)}
+ else{const dauer=o.dauer||6000;if(!o.satellit)satDeckkraft(0,700);
+  gelaende(0,700,nr,()=>{if(FLUG!==nr)return;KM.flyTo({...ziel,duration:dauer,curve:1.4,essential:true});setTimeout(ankunft,dauer+100)})}
+ karteText(s);profil(s)}
+function karteBau(s){if(typeof mapboxgl==='undefined'||!mapboxgl.supported||!mapboxgl.supported())return;
+ KD=document.createElement('div');KD.className='karte';const v=document.createElement('div');v.id='kartevorrat';document.body.appendChild(v);v.appendChild(KD);
+ mapboxgl.accessToken=TOKEN;const o=stationen(s)[0];KSTIL=s.dataset.stil;
+ KM=new mapboxgl.Map({container:KD,style:KSTIL,projection:'globe',language:'de',interactive:false,maxTileCacheSize:3000,fadeDuration:0,pixelRatio:Math.max(2,window.devicePixelRatio||1),center:o.center,zoom:o.zoom,pitch:o.pitch||0,bearing:o.bearing||0});
+ KM.on('style.load',()=>{if(!KM.getSource('dem')){KM.addSource('dem',{type:'raster-dem',url:'mapbox://mapbox.mapbox-terrain-dem-v1',tileSize:512,maxzoom:14});KM.setTerrain({source:'dem',exaggeration:TERR})}
+ // Relief (15.11.2026): Bei eigenen Stilen ohne Gelände-Schattierung (z.B. Geologie-Style) Schummerung aus dem Höhenmodell, damit Berge sichtbar werden
+ if(!/mapbox\/standard/.test(KSTIL)&&!KM.getLayer('relief')){
+  KM.addLayer({id:'relief',type:'hillshade',source:'dem',paint:{'hillshade-exaggeration':0.6,'hillshade-shadow-color':'rgba(25,30,40,0.75)','hillshade-highlight-color':'rgba(255,255,255,0.3)','hillshade-accent-color':'rgba(0,0,0,0.15)','hillshade-illumination-direction':315}},KM.getLayer('sat')?'sat':undefined)}KM.setFog({});
+ // Standard-Stile: Strassen, Nummern und POI ausblenden, nur Ortsnamen und Gewässer bleiben (13.11.2026)
+ ['showRoadsAndTransit','showRoadLabels','showPointOfInterestLabels','showTransitLabels','showPedestrianRoads','showAdminBoundaries'].forEach(k=>{try{KM.setConfigProperty('basemap',k,false)}catch(e){}});ueberlagerung(f[i]);grenzenEbene();satEbene();beschriftung()});
+ KM.once('load',()=>{beschriftung();vorladen()})}
+// Vorladen (13.11.2026): Solange keine Kartenfolie gezeigt wird, springt die unsichtbare Karte alle Stationen ab.
+// Die Kacheln liegen danach im Zwischenspeicher, die Flüge im Unterricht laden nicht mehr nach.
+let abbruch=false;
+function warte(ms){return new Promise(r=>setTimeout(r,ms))}
+// Vorladen mit Zwischenhalten (15.11.2026): zwischen zwei Stationen auch die Mitte des Flugbogens, weiter herausgezoomt
+function vorladeListe(s){const L=[],S=stationen(s);S.forEach((o,k)=>{if(k>0){const a=S[k-1];L.push({center:[(a.center[0]+o.center[0])/2,(a.center[1]+o.center[1])/2],zoom:Math.max(1.5,Math.min(a.zoom,o.zoom)-3),pitch:0,bearing:0})}L.push(o)});return L}
+async function vorladen(){for(const s of f.filter(istKarte))for(const o of vorladeListe(s)){if(abbruch||istKarte(f[i]))return;
+ satEbene();if(KM.getLayer('sat'))KM.setPaintProperty('sat','raster-opacity-transition',{duration:0});if(KM.getLayer('sat'))KM.setPaintProperty('sat','raster-opacity',o.satellit?0.02:0);
+ KM.jumpTo({center:o.center,zoom:o.zoom,pitch:o.pitch||0,bearing:o.bearing||0});await Promise.race([new Promise(r=>KM.once('idle',r)),warte(15000)])}
+ if(KM.getLayer('sat'))KM.setPaintProperty('sat','raster-opacity',0);
+ if(abbruch||istKarte(f[i]))return;const o=stationen(f.find(istKarte))[0];KM.jumpTo({center:o.center,zoom:o.zoom,pitch:o.pitch||0,bearing:o.bearing||0});console.log('Karten vorgeladen')}
+function karteZeigen(s){if(!istKarte(s)){if(KM)KM.stop();return}abbruch=true;
+ const platz=s.querySelector('.kartenplatz');if(!KM){platz.textContent='Die Karte braucht Internet und WebGL.';return}
+ if(KD.parentNode!==platz)platz.appendChild(KD);KM.resize();
+ if(KSTIL!==s.dataset.stil){KSTIL=s.dataset.stil;KM.setStyle(KSTIL)}
+ ueberlagerung(s);beschriftung();karteFlug(s,true)}
 const RICHT=[[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]];
 function neu(el){el.style.animation='none';el.offsetHeight;el.style.animation=''}
 function zeig(n){i=Math.max(0,Math.min(f.length-1,n));f.forEach((s,k)=>s.classList.toggle('an',k===i));if(typeof malen==='function')malen();
- const s=f[i];const p=s.querySelector('.seite');if(p){const r=RICHT[Math.floor(Math.random()*8)],w=Math.random()*Math.PI*2;p.style.setProperty('--dx',r[0]*12+'px');p.style.setProperty('--dy',r[1]*10+'px');p.style.setProperty('--sx',(Math.cos(w)*5).toFixed(1)+'px');p.style.setProperty('--sy',(Math.sin(w)*3).toFixed(1)+'px');p.getAnimations().forEach(a=>{if(a.id==='raus')a.cancel()});neu(p)}const b=s.querySelector('.ks-blatt');if(b)neu(b);
- document.getElementById('fort').style.width=((i+1)/f.length*100)+'%'}
-function geh(n){n=Math.max(0,Math.min(f.length-1,n));if(busy||n===i)return;if(typeof X!=='undefined')X.clearRect(0,0,CB.width,CB.height);const cur=f[i];
+ const s=f[i];karteZeigen(s);const p=s.querySelector('.seite');if(p){const r=RICHT[Math.floor(Math.random()*8)],w=Math.random()*Math.PI*2;p.style.setProperty('--dx',r[0]*12+'px');p.style.setProperty('--dy',r[1]*10+'px');p.style.setProperty('--sx',(Math.cos(w)*5).toFixed(1)+'px');p.style.setProperty('--sy',(Math.sin(w)*3).toFixed(1)+'px');p.getAnimations().forEach(a=>{if(a.id==='raus')a.cancel()});neu(p)}const b=s.querySelector('.ks-blatt');if(b)neu(b);
+ document.getElementById('fort').style.width=((i+1)/f.length*100)+'%';document.querySelectorAll('video.film').forEach(v=>{if(s.contains(v)){try{v.currentTime=0}catch(e){}v.play().catch(()=>{})}else v.pause()})}
+function geh(n){if(busy)return;const ks=f[i];
+ if(istKarte(ks)&&KM){const N=stationen(ks).length;if(n===i+1&&st<N-1){X.clearRect(0,0,CB.width,CB.height);st++;karteFlug(ks);malen();return}if(n===i-1&&st>0){X.clearRect(0,0,CB.width,CB.height);st--;karteFlug(ks);malen();return}}
+ n=Math.max(0,Math.min(f.length-1,n));if(n===i)return;st=(n<i&&istKarte(f[n])&&KM)?stationen(f[n]).length-1:0;if(typeof X!=='undefined')X.clearRect(0,0,CB.width,CB.height);const cur=f[i];
  const p=HOCH&&cur.querySelector('.seite');if(p){busy=true;const r=p.getBoundingClientRect();p.style.animation='none';const a=p.animate([{transform:'translateY(0)'},{transform:'translateY('+(-(r.bottom+30))+'px)'}],{duration:550,easing:'cubic-bezier(.7,0,.84,0)',fill:'forwards'});a.id='raus';a.onfinish=()=>{busy=false;zeig(n)}}else zeig(n)}
 document.addEventListener('keydown',e=>{
  if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){geh(i+1);e.preventDefault()}
@@ -84,7 +254,9 @@ document.addEventListener('keydown',e=>{
 
 // Stift: Apple Pencil schreibt immer, Finger und Maus blättern (ausser im Stift-Modus).
 // Tippen im linken Viertel = zurück, sonst weiter. Tasten: P Stift, Z rückgängig, C Folie löschen.
-const C=document.getElementById('tafel'),X=C.getContext('2d'),WZ=document.getElementById('werkzeug');
+document.addEventListener('click',e=>{const k=e.target.closest('.vergleichknopf');if(!k)return;e.stopPropagation();vergleich(k.closest('.folie'),!k.dataset.an)},true);
+// 16.11.2026: desynchronized = geringe Verzögerung (Chrome/Brave); tafel2 zeigt die vorhergesagte Strichspitze
+const C=document.getElementById('tafel'),X=C.getContext('2d',{desynchronized:true})||C.getContext('2d'),C2=document.getElementById('tafel2'),X2=C2.getContext('2d',{desynchronized:true})||C2.getContext('2d'),WZ=document.getElementById('werkzeug');
 const FARBEN={rot:{c:'#C0392B'},blau:{c:'#4A6488'},schwarz:{c:'#2B2727'},marker:{c:'#FFD400',a:.38,m:1}};
 let modus=false,rad=false,farbe=FARBEN.rot,zug=null,penZeit=0;
 const KEY='tafel:'+document.title;let S={};
@@ -93,37 +265,50 @@ function speichern(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 let CB={left:0,top:0,width:1,height:1};
 function rahmen(){const r=f[i].getBoundingClientRect();return{left:r.left-CB.left,top:r.top-CB.top,width:r.width,height:r.height}}
 function abs(q,r){return[r.left+q[0]*r.width,r.top+q[1]*r.height,q[2]*r.width]}
-function segment(z,a,b,r){const A=abs(a,r),B=abs(b,r);X.globalAlpha=z.a||1;X.strokeStyle=ton(z.c);X.lineWidth=B[2];
- X.lineCap=X.lineJoin='round';X.beginPath();X.moveTo(A[0],A[1]);X.lineTo(B[0],B[1]);X.stroke();X.globalAlpha=1}
+function segment(z,a,b,r,x){x=x||X;const A=abs(a,r),B=abs(b,r);x.globalAlpha=z.a||1;x.strokeStyle=ton(z.c);x.lineWidth=B[2];
+ x.lineCap=x.lineJoin='round';x.beginPath();x.moveTo(A[0],A[1]);x.lineTo(B[0],B[1]);x.stroke();x.globalAlpha=1}
 function strich(z,r){const p=z.p;if(p.length===1){segment(z,p[0],p[0],r);return}
  if(z.m){X.globalAlpha=z.a;X.strokeStyle=ton(z.c);X.lineWidth=abs(p[0],r)[2];X.lineCap=X.lineJoin='round';X.beginPath();
   p.forEach((q,k)=>{const A=abs(q,r);k?X.lineTo(A[0],A[1]):X.moveTo(A[0],A[1])});X.stroke();X.globalAlpha=1;return}
  for(let k=1;k<p.length;k++)segment(z,p[k-1],p[k],r)}
 // Auf dunklen Folien: Schwarz wird Weiss, Graublau wird Hellblau
 function ton(c){return f[i].classList.contains('dunkel')?({'#2B2727':'#FFFFFF','#4A6488':'#9DB4E0'}[c]||c):c}
-function malen(){X.clearRect(0,0,CB.width,CB.height);WZ.classList.toggle('dunkel',f[i].classList.contains('dunkel'));f[i].classList.toggle('beschrieben',!!(S[i]||[]).length);
- const r=rahmen();(S[i]||[]).forEach(z=>strich(z,r))}
-function groesse(){const d=devicePixelRatio||1;CB=C.getBoundingClientRect();C.width=Math.round(CB.width*d);C.height=Math.round(CB.height*d);
- X.setTransform(C.width/CB.width,0,0,C.height/CB.height,0,0);malen()}
-function punkt(e){const r=f[i].getBoundingClientRect(),pr=e.pointerType==='pen'?(e.pressure||.5):.5;
+function malen(){X.clearRect(0,0,CB.width,CB.height);WZ.classList.toggle('dunkel',f[i].classList.contains('dunkel'));f[i].classList.toggle('beschrieben',!!(S[K()]||[]).length);
+ const r=rahmen();(S[K()]||[]).forEach(z=>strich(z,r))}
+function groesse(){const d=devicePixelRatio||1;CB=C.getBoundingClientRect();C.width=C2.width=Math.round(CB.width*d);C.height=C2.height=Math.round(CB.height*d);
+ X.setTransform(C.width/CB.width,0,0,C.height/CB.height,0,0);X2.setTransform(C.width/CB.width,0,0,C.height/CB.height,0,0);malen()}
+// 16.11.2026 Tempo: Rahmen nur einmal pro Strich messen, gezeichnet wird einmal pro Bildschirmbild (rAF)
+let FR=null,ZR=null,raf=0,VOR=[];
+function vorLeeren(){X2.clearRect(0,0,CB.width,CB.height)}
+function punkt(e,fr){const r=fr||f[i].getBoundingClientRect(),pr=e.pointerType==='pen'?(e.pressure||.5):.5;
  return[(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height,farbe.m?.016:.0012+.0032*pr]}
-function radieren(q){const vor=(S[i]||[]).length;
- S[i]=(S[i]||[]).filter(z=>!z.p.some(p=>Math.hypot(p[0]-q[0],(p[1]-q[1])*9/16)<.014));if(S[i].length!==vor)malen()}
-document.addEventListener('pointerdown',e=>{if(e.target.closest('#werkzeug,a')||busy)return;
- const pen=e.pointerType==='pen';if(!pen&&!modus)return;e.preventDefault();if(pen)penZeit=Date.now();
- const q=punkt(e);if(rad){zug={rad:1};radieren(q);return}
- zug={c:farbe.c,a:farbe.a,m:farbe.m,p:[q]};(S[i]=S[i]||[]).push(zug);
- if(!zug.m)segment(zug,q,q,rahmen())},{passive:false});
+function radieren(q){const vor=(S[K()]||[]).length;
+ S[K()]=(S[K()]||[]).filter(z=>!z.p.some(p=>Math.hypot(p[0]-q[0],(p[1]-q[1])*9/16)<.014));if(S[K()].length!==vor)malen()}
+document.addEventListener('pointerdown',e=>{if(e.target.closest('#werkzeug,a,.vergleichknopf')||busy)return;
+ const pen=e.pointerType==='pen';if(!pen&&!modus)return;e.preventDefault();if(KM&&istKarte(f[i]))KM.stop();if(pen)penZeit=Date.now();
+ FR=f[i].getBoundingClientRect();ZR=rahmen();f[i].classList.add('beschrieben');
+ const q=punkt(e,FR);if(rad){zug={rad:1};radieren(q);return}
+ zug={c:farbe.c,a:farbe.a,m:farbe.m,p:[q],g:1};(S[K()]=S[K()]||[]).push(zug);
+ if(!zug.m)segment(zug,q,q,ZR)},{passive:false});
+function zeichne(){raf=0;const z=zug;vorLeeren();if(!z||z.rad)return;if(z.m){malen();return}
+ for(let k=Math.max(1,z.g);k<z.p.length;k++)segment(z,z.p[k-1],z.p[k],ZR);z.g=z.p.length;
+ let v=z.p[z.p.length-1];VOR.forEach(q=>{segment(z,v,q,ZR,X2);v=q})}
 document.addEventListener('pointermove',e=>{if(!zug)return;e.preventDefault();
- const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e],r=rahmen();
- (evs.length?evs:[e]).forEach(ev=>{const q=punkt(ev);if(zug.rad){radieren(q);return}
-  const v=zug.p[zug.p.length-1];zug.p.push(q);if(!zug.m)segment(zug,v,q,r)});if(zug.m)malen()},{passive:false});
-function ende(e){if(e.pointerType==='pen')penZeit=Date.now();if(zug){zug=null;speichern()}}
+ const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];
+ (evs.length?evs:[e]).forEach(ev=>{const q=punkt(ev,FR);if(zug.rad){radieren(q);return}zug.p.push(q)});
+ VOR=[];if(!zug.rad&&!zug.m&&e.getPredictedEvents){try{VOR=e.getPredictedEvents().slice(-2).map(ev=>punkt(ev,FR))}catch(err){}}
+ if(!zug.rad&&!raf)raf=requestAnimationFrame(zeichne)},{passive:false});
+function ende(e){if(e.pointerType==='pen')penZeit=Date.now();if(zug){VOR=[];if(raf){cancelAnimationFrame(raf);zeichne()}vorLeeren();zug=null;speichern()}}
+// iPad: Touch-Standardverhalten des Pencils (Handschrift/Scribble, Lupe, Scrollen) unterdrücken, sonst kommt die Tinte verzögert
+function stiftTouch(e){const t=e.touches[0]||e.changedTouches[0];if(!t)return;
+ if(e.type==='touchstart'&&e.target.closest&&e.target.closest('#werkzeug,a,button,.vergleichknopf,.kartenauftrag'))return;
+ if(t.touchType==='stylus'||modus)e.preventDefault()}
+document.addEventListener('touchstart',stiftTouch,{passive:false});document.addEventListener('touchmove',stiftTouch,{passive:false});
 document.addEventListener('pointerup',ende);document.addEventListener('pointercancel',ende);
 function stiftModus(an){modus=an;WZ.querySelector('[data-a=stift]').classList.toggle('an',an);WZ.classList.toggle('aktiv',an)}
 function waehle(btn){WZ.querySelectorAll('.farbe,[data-a=radierer]').forEach(b=>b.classList.remove('an'));btn.classList.add('an')}
-function rueckgaengig(){if((S[i]||[]).length){S[i].pop();speichern();malen()}}
-function loeschen(){if((S[i]||[]).length){S[i]=[];speichern();malen()}}
+function rueckgaengig(){if((S[K()]||[]).length){S[K()].pop();speichern();malen()}}
+function loeschen(){if((S[K()]||[]).length){S[K()]=[];speichern();malen()}}
 function alleLoeschen(){if(!Object.values(S).some(z=>z&&z.length))return;
  if(!confirm('Notizen auf allen Folien löschen?'))return;S={};speichern();malen()}
 const DE=document.documentElement,VB=DE.requestFullscreen||DE.webkitRequestFullscreen;
@@ -150,5 +335,6 @@ document.addEventListener('click',e=>{if(e.target.closest('a,#werkzeug'))return;
  if(modus||Date.now()-penZeit<700)return;geh(e.clientX<innerWidth*.25?i-1:i+1)});
 addEventListener('resize',groesse);if(window.visualViewport)visualViewport.addEventListener('resize',groesse);
 if(window.ResizeObserver)new ResizeObserver(groesse).observe(C);
+{const k0=f.find(istKarte);if(k0)karteBau(k0)}
 groesse();zeig(0);
 </script></body></html>

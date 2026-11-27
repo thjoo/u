@@ -17,6 +17,7 @@ html,body{height:100%;background:#6E6864;overflow:hidden;font-family:'Open Sans'
 #werkzeug.dunkel [data-f=schwarz] span{background:#fff!important}#werkzeug.dunkel [data-f=blau] span{background:#9DB4E0!important}
 .leiste{position:absolute;left:0;right:0;bottom:0;height:var(--bar);background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;font-family:'Inconsolata',monospace;font-size:15px;letter-spacing:.18em;text-transform:uppercase;z-index:5}
 .leiste span:last-child{position:absolute;right:20px;font-size:12px;letter-spacing:.08em;opacity:.6}
+.erz .mitte{justify-content:flex-start;text-align:left}.erz .satz{font-weight:400;font-size:4.4cqh;line-height:1.5;max-width:30em;color:#2B2727}
 .mitte{position:absolute;inset:0 0 var(--bar) 0;display:flex;align-items:center;justify-content:center;padding:0 12cqw;text-align:center}
 .titel{font-family:'Montserrat',sans-serif;font-weight:800;font-size:9cqh;line-height:1.1}
 .satz{font-family:'Open Sans',sans-serif;font-weight:700;font-size:5.2cqh;line-height:1.35;max-width:22em}
@@ -163,6 +164,23 @@ html,body{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-to
 .fotobox .fq{opacity:.7;margin-left:.4em}
 .sanft .folie.an .fotobox figure{animation:fotoein 1.2s ease both}
 @keyframes fotoein{from{opacity:0}to{opacity:1}}
+/* 27.11.2026 Schieber, Bildvergleich, Klickpunkte */
+.sgriff{position:absolute;top:0;bottom:var(--bar);left:var(--x,50%);width:7cqw;margin-left:-3.5cqw;z-index:6;cursor:ew-resize;touch-action:none}
+.sgriff i{position:absolute;left:50%;top:0;bottom:0;width:3px;margin-left:-1.5px;background:#fff;box-shadow:0 0 6px rgba(0,0,0,.55)}
+.sgriff i::after{content:'‹ ›';position:absolute;left:50%;top:50%;width:6cqh;height:6cqh;margin:-3cqh 0 0 -3cqh;border-radius:50%;background:#fff;box-shadow:0 1px 8px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font:700 2.6cqh/1 'Open Sans',sans-serif;color:#2B2727}
+.stitel{position:absolute;top:2.5cqh;z-index:5;padding:.9cqh 1.5cqh;background:rgba(250,247,242,.93);color:var(--ink);font:700 2.6cqh/1 'Montserrat',sans-serif;pointer-events:none}
+.stitel.l{left:2.5cqw}.stitel.r{right:2.5cqw}
+.kartenplatz .k2{position:absolute;inset:0;clip-path:inset(0 0 0 var(--x,50%))}
+.bvbox{position:absolute;top:5.5cqh;left:6cqw;right:6cqw;bottom:calc(var(--bar) + 3.5cqh);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.bv{position:relative;line-height:0}.bv img{display:block;max-width:88cqw;max-height:calc(80cqh - var(--bar))}
+.bv .bvr{position:absolute;left:0;top:0;width:100%;height:100%;clip-path:inset(0 0 0 var(--x,50%))}
+.bv .sgriff{bottom:0}.bv .stitel{top:1.5cqh}.bv .stitel.l{left:1.5cqh}.bv .stitel.r{right:1.5cqh}
+.bvunter{align-self:stretch;padding-top:1.3cqh;font-size:1.55cqh;line-height:1.45;color:var(--ink);opacity:.62}.bvunter .fq{opacity:.7;margin-left:.4em}
+.kpunkt{appearance:none;border:0;padding:0;width:3.6cqh;height:3.6cqh;border-radius:50%;background:#fff;box-shadow:0 0 0 .55cqh #171782,0 2px 10px rgba(0,0,0,.5);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.kpunkt::after{content:'';width:1.3cqh;height:1.3cqh;border-radius:50%;background:#171782}
+.kbox{position:absolute;inset:0 0 var(--bar) 0;z-index:8;display:none;flex-direction:column;align-items:center;justify-content:center;gap:1.4cqh;padding:5cqh 6cqw;background:rgba(15,15,25,.62);cursor:zoom-out}
+.kbox.sicht{display:flex}.kbox img,.kbox video{max-width:100%;max-height:calc(100% - 7cqh);background:#fff;padding:.8cqh;box-shadow:0 4px 20px rgba(0,0,0,.45)}
+.kbu{color:#fff;font-size:2.2cqh;font-weight:600;text-align:center}.kbu .fq{font-weight:400;opacity:.75;margin-left:.5em;font-size:1.7cqh}
 #fort{position:fixed;left:0;bottom:0;height:3px;background:var(--peach);transition:.2s;z-index:9}
 </style></head><body class="sanft"><div id="buehne">
 <section class="folie an"><div class="mitte"><h1 class="titel">Der Kreislauf schliesst sich</h1></div><div class="leiste"><span>Die Erde in Bewegung – Der Kreislauf schliesst sich</span><span>01 / 09</span></div></section>
@@ -236,7 +254,7 @@ function ueberlagerung(s){if(!KM)return;
  if(s&&istKarte(s)&&!KM.getSource('ueb'))delete s.dataset.uebAkt;
  // 27.11.2026: Beim schnellen Blättern während des Vorladens wirft addSource «Style is not done loading» (Standard-Stil mit Imports) -> später nochmals
  if(u.kacheln&&!KM.getSource('ueb')){try{KM.addSource('ueb',{type:'raster',tiles:[u.kacheln],tileSize:256,maxzoom:u.max_zoom||7});
-  KM.addLayer({id:'ueb',type:'raster',source:'ueb',paint:{'raster-opacity':0,'raster-opacity-transition':{duration:1500},'raster-fade-duration':0}},KM.getLayer('orte')?'orte':undefined)}
+  KM.addLayer({id:'ueb',type:'raster',source:'ueb',paint:{'raster-opacity':0,'raster-opacity-transition':{duration:1500},'raster-fade-duration':0}},KM.getLayer('linie-rand')?'linie-rand':(KM.getLayer('orte')?'orte':undefined))}
   catch(e){try{if(KM.getSource('ueb')&&!KM.getLayer('ueb'))KM.removeSource('ueb')}catch(e2){}if(!UEBWARTE){UEBWARTE=true;setTimeout(()=>{UEBWARTE=false;if(f[i]===s)ueberlagerung(s)},300)}return}}
  if(KM.getLayer('ueb'))KM.setPaintProperty('ueb','raster-opacity',u.kacheln?(u.deckkraft||.7):0)}
 // Eigene Beschriftung (15.11.2026): Ortsnamen der Grundkarte aus, nur die Orte aus der Spezifikation, in Thierrys Schrift
@@ -261,8 +279,9 @@ function satDeckkraft(w,ms){if(!KM||!KM.getLayer('sat'))return;KM.setPaintProper
 const UEBERHOEHUNG=1.3;let FLUG=0,TERR=UEBERHOEHUNG;
 function gelaende(ziel,ms,nr,fertig){const von=TERR,t0=performance.now();
  function schritt(t){if(FLUG!==nr)return;const x=Math.min(1,(t-t0)/ms),e=x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;TERR=von+(ziel-von)*e;
-  try{KM.setTerrain({source:'dem',exaggeration:TERR})}catch(err){}if(x<1)requestAnimationFrame(schritt);else if(fertig)fertig()}
- if(ms<=0){TERR=ziel;try{KM.setTerrain({source:'dem',exaggeration:ziel})}catch(err){}if(fertig)fertig();return}requestAnimationFrame(schritt)}
+  terrSet(TERR);if(x<1)requestAnimationFrame(schritt);else if(fertig)fertig()}
+ if(ms<=0){TERR=ziel;terrSet(ziel);if(fertig)fertig();return}requestAnimationFrame(schritt)}
+function terrSet(v){try{KM.setTerrain({source:'dem',exaggeration:v})}catch(e){}if(K2)try{K2.setTerrain({source:'dem',exaggeration:v})}catch(e){}}
 // Plattengrenzen und Querschnitt (15.11.2026)
 const GFARBE={graben:'#c8584f',ruecken:'#f07a3a',sub_ok:'#26338f',sub_oo:'#9b5de5',kollision:'#151515',transform:'#ffe14d',diffus:'#2a2a2a'};
 const GNAME={graben:'Grabenbruch',ruecken:'Mittelozean. Rücken',sub_ok:'Subduktion ozean.–kont.',sub_oo:'Subduktion ozean.–ozean.',kollision:'Kollision',transform:'Transformstörung',diffus:'übrige Grenze'};
@@ -315,11 +334,11 @@ function karteFlug(s,springen){const o=stationen(s)[st];if(!KM)return;KM.stop();
  // 16.11.2026: "schwenken": {"grad": 8, "dauer": 120000} dreht nach der Ankunft gaaanz langsam weiter (linear, stoppt beim Weiterschalten)
  const drehen=()=>{if(o.profil||FLUG!==nr||!istKarte(f[i]))return;if(o.drehen)KM.easeTo({bearing:KM.getBearing()+90,duration:30000,easing:t=>t,essential:true});
   else if(o.schwenken){const w=o.schwenken===true?{}:o.schwenken;KM.easeTo({bearing:KM.getBearing()+(w.grad||8),duration:w.dauer||120000,easing:t=>t,essential:true})}};
- const ankunft=()=>{if(FLUG!==nr)return;gelaende(UEBERHOEHUNG,1600,nr,()=>{if(o.satellit&&KM.getPaintProperty('sat','raster-opacity')<1)satDeckkraft(1,2200);setTimeout(drehen,300)})};
- if(springen){satDeckkraft(0,0);KM.jumpTo(ziel);gelaende(UEBERHOEHUNG,0,nr);if(o.satellit)satDeckkraft(1,1200);setTimeout(drehen,300)}
+ const ankunft=()=>{if(FLUG!==nr)return;gelaende(UEBERHOEHUNG,1600,nr,()=>{if(o.relief)setTimeout(()=>{if(FLUG===nr)gelaende(o.relief,3500,nr)},500);if(o.satellit&&KM.getPaintProperty('sat','raster-opacity')<1)satDeckkraft(1,2200);setTimeout(drehen,300)})};
+ if(springen){satDeckkraft(0,0);KM.jumpTo(ziel);gelaende(UEBERHOEHUNG,0,nr);linieSetzen(linieZiel(s));if(o.relief)setTimeout(()=>{if(FLUG===nr)gelaende(o.relief,3500,nr)},900);if(o.satellit)satDeckkraft(1,1200);setTimeout(drehen,300)}
  else{const dauer=o.dauer||6000;if(!o.satellit)satDeckkraft(0,700);
-  gelaende(0,700,nr,()=>{if(FLUG!==nr)return;KM.flyTo({...ziel,duration:dauer,curve:1.4,essential:true});setTimeout(ankunft,dauer+100)})}
- karteText(s);profil(s)}
+  gelaende(0,700,nr,()=>{if(FLUG!==nr)return;linieAnim(linieZiel(s),dauer,nr);KM.flyTo({...ziel,duration:dauer,curve:1.4,essential:true});setTimeout(ankunft,dauer+100)})}
+ karteText(s);profil(s);punkteZeigen(s);const kb=s.querySelector('.kbox');if(kb)kb.classList.remove('sicht')}
 // Fluss (27.11.2026): Linie aus der GeoJSON in data-fluss, leuchtend hellblau mit dunklem Rand, liegt unter den Ortsnamen
 function flussEbene(){if(!KM)return;try{if(!KM.getStyle())return}catch(e){return}
  const s=f.find(x=>istKarte(x)&&x.dataset.fluss);if(!s||KM.getLayer('fluss'))return;const fl=JSON.parse(s.dataset.fluss);
@@ -327,6 +346,51 @@ function flussEbene(){if(!KM)return;try{if(!KM.getStyle())return}catch(e){return
  const slot=/mapbox\/standard/.test(KSTIL)?{slot:'middle'}:{},w=(a,b)=>['interpolate',['linear'],['zoom'],7,a,14,b];
  KM.addLayer(Object.assign({id:'fluss-rand',type:'line',source:'flussquelle',layout:{'line-join':'round','line-cap':'round'},paint:{'line-color':'#0b2a4a','line-width':w(3,9),'line-opacity':.5}},slot));
  KM.addLayer(Object.assign({id:'fluss',type:'line',source:'flussquelle',layout:{'line-join':'round','line-cap':'round'},paint:{'line-color':fl.farbe||'#5EC8FF','line-width':w(1.6,5)}},slot))}
+// 27.11.2026 Linie, die sich mitzeichnet: "linie": {"datei": "...geojson"} (eine LineString in Fliessrichtung),
+// pro Station "linie_bis": 0.4 = bis hier ist die Linie gezeichnet (Anteil der Länge). Gezeichnet wird während des Flugs.
+let LIP=0;
+function linieEbene(){if(!KM)return;try{if(!KM.getStyle())return}catch(e){return}
+ const s=f.find(x=>istKarte(x)&&x.dataset.linie);if(!s||KM.getLayer('linie'))return;const L=JSON.parse(s.dataset.linie);
+ if(!KM.getSource('linieq'))KM.addSource('linieq',{type:'geojson',data:L.daten,lineMetrics:true});
+ // Mit Überlagerung (z.B. Schiffsverkehr) liegt die Linie zuoberst, sonst unter den Ortsnamen
+ const mitUeb=!!JSON.parse(s.dataset.ueb||'{}').kacheln,slot=/mapbox\/standard/.test(KSTIL)&&!mitUeb?{slot:'middle'}:{},b=L.breite||1,w=(a,c)=>['interpolate',['linear'],['zoom'],3,a*b,14,c*b],t=[Math.min(LIP,.99999),1];
+ KM.addLayer(Object.assign({id:'linie-rand',type:'line',source:'linieq',layout:{'line-join':'round','line-cap':'round'},paint:{'line-color':L.rand||'#0b2a4a','line-width':w(3.5,9),'line-opacity':.55,'line-trim-offset':t}},slot));
+ KM.addLayer(Object.assign({id:'linie',type:'line',source:'linieq',layout:{'line-join':'round','line-cap':'round'},paint:{'line-color':L.farbe||'#5EC8FF','line-width':w(2,5),'line-trim-offset':t}},slot))}
+function linieZiel(s){const S=stationen(s);let z=0;for(let k=0;k<=st&&k<S.length;k++)if(S[k].linie_bis!=null)z=S[k].linie_bis;return z}
+function linieSetzen(p){LIP=Math.max(0,Math.min(1,p));const t=[Math.min(LIP,.99999),1];['linie','linie-rand'].forEach(id=>{try{if(KM&&KM.getLayer(id))KM.setPaintProperty(id,'line-trim-offset',t)}catch(e){}})}
+function linieAnim(ziel,ms,nr){const von=LIP,t0=performance.now();if(von===ziel)return;function sch(t){if(FLUG!==nr)return;const x=Math.min(1,(t-t0)/ms);linieSetzen(von+(ziel-von)*x);if(x<1)requestAnimationFrame(sch)}requestAnimationFrame(sch)}
+function linieSichtbar(s){['linie','linie-rand'].forEach(id=>{try{if(KM&&KM.getLayer(id))KM.setLayoutProperty(id,'visibility',s&&s.dataset.linie?'visible':'none')}catch(e){}})}
+// 27.11.2026 Klickpunkte: "punkte": [{"ort": [lon, lat], "titel": "...", "bild": "...jpg", "quelle": "...", "station": 2}]
+// Ein Klick auf den Punkt zeigt Foto oder Film gross, ein Klick auf das Bild schliesst es. "station" = nur bei dieser Station.
+let MARK=[];
+function punkteZeigen(s){MARK.forEach(m=>m.remove());MARK=[];if(!KM||!s||!s.dataset.punkte)return;
+ JSON.parse(s.dataset.punkte).forEach((p,k)=>{if(p.station!=null&&p.station!==st)return;const el=document.createElement('button');el.className='kpunkt';el.type='button';el.dataset.k=k;el.title=p.titel||'';
+  MARK.push(new mapboxgl.Marker({element:el,anchor:'center'}).setLngLat(p.ort).addTo(KM))})}
+function kbox(s,k){const p=JSON.parse(s.dataset.punkte)[k],b=s.querySelector('.kbox');if(!b||!p)return;
+ b.innerHTML=(p.film?`<video src="${p.film}" autoplay muted loop playsinline></video>`:`<img src="${p.bild}" alt="">`)+`<div class="kbu">${p.titel||''}${p.quelle?`<span class="fq">${p.quelle}</span>`:''}</div>`;b.classList.add('sicht')}
+// 27.11.2026 Schieber auf der Karte: "schieber": {"links_titel": "1861", "rechts": {"titel": "2018", "kacheln": "...", "max_zoom": 18}, "quelle": "..."}
+// Links = Karte mit "ueberlagerung", rechts = zweite Karte (gleiche Kamera), Griff in der Mitte zum Ziehen.
+let K2=null,K2SYNC=null,SG=null,SGZ=0;
+function schieberWeg(){if(K2){try{KM.off('move',K2SYNC)}catch(e){}K2.remove();K2=null}document.querySelectorAll('.k2').forEach(e=>e.remove())}
+function schieber(s){const sc=s&&istKarte(s)&&s.dataset.schieber&&KM?JSON.parse(s.dataset.schieber):null;
+ if(!sc){schieberWeg();return}if(K2&&K2._folie===s)return;schieberWeg();
+ const platz=s.querySelector('.kartenplatz'),d=document.createElement('div');d.className='k2';platz.appendChild(d);s.style.setProperty('--x','50%');
+ K2=new mapboxgl.Map({container:d,style:KSTIL,projection:'globe',language:'de',interactive:false,fadeDuration:0,pixelRatio:Math.max(2,window.devicePixelRatio||1),center:KM.getCenter(),zoom:KM.getZoom(),pitch:KM.getPitch(),bearing:KM.getBearing()});K2._folie=s;
+ const R=sc.rechts||{};
+ K2.on('style.load',()=>{try{K2.addSource('dem',{type:'raster-dem',url:'mapbox://mapbox.mapbox-terrain-dem-v1',tileSize:512,maxzoom:14});K2.setTerrain({source:'dem',exaggeration:TERR});K2.setFog({});
+  ['showRoadsAndTransit','showRoadLabels','showPointOfInterestLabels','showTransitLabels','showPedestrianRoads','showAdminBoundaries'].forEach(k=>{try{K2.setConfigProperty('basemap',k,false)}catch(e){}});
+  if(JSON.parse(s.dataset.beschr||'{}').orte)try{K2.setConfigProperty('basemap','showPlaceLabels',false)}catch(e){}
+  if(R.kacheln){K2.addSource('ueb2',{type:'raster',tiles:[R.kacheln],tileSize:256,maxzoom:R.max_zoom||18});K2.addLayer({id:'ueb2',type:'raster',source:'ueb2',paint:{'raster-opacity':R.deckkraft||.92,'raster-fade-duration':0}})}}catch(e){console.log('schieber',e)}});
+ K2SYNC=()=>{if(K2)K2.jumpTo({center:KM.getCenter(),zoom:KM.getZoom(),pitch:KM.getPitch(),bearing:KM.getBearing()})};KM.on('move',K2SYNC);
+ setTimeout(()=>{if(K2&&K2._folie===s)schieberZeigen(s)},1800)}
+// Einmal kurz hin und her, damit man sieht, dass man ziehen kann
+function schieberZeigen(box){const t0=performance.now();function sch(t){if(SG)return;const x=Math.min(1,(t-t0)/2600);box.style.setProperty('--x',(50+16*Math.sin(x*Math.PI*2))+'%');if(x<1)requestAnimationFrame(sch)}requestAnimationFrame(sch)}
+document.addEventListener('pointerdown',e=>{const g=e.target.closest('.sgriff');if(!g)return;e.stopPropagation();e.preventDefault();SG=g;try{g.setPointerCapture(e.pointerId)}catch(err){}},true);
+document.addEventListener('pointermove',e=>{if(!SG)return;const box=SG.parentElement,r=(box.querySelector('.kartenplatz')||box).getBoundingClientRect();box.style.setProperty('--x',Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100))+'%')},true);
+document.addEventListener('pointerup',e=>{if(SG){SG=null;SGZ=Date.now();e.stopPropagation()}},true);
+document.addEventListener('click',e=>{const p=e.target.closest('.kpunkt'),b=e.target.closest('.kbox'),g=e.target.closest('.sgriff');
+ if(!p&&!b&&!g&&Date.now()-SGZ>400)return;e.stopPropagation();if(p)kbox(f[i],+p.dataset.k);else if(b)b.classList.remove('sicht')},true);
+addEventListener('resize',()=>{if(K2)K2.resize()});
 function karteBau(s){if(typeof mapboxgl==='undefined'||!mapboxgl.supported||!mapboxgl.supported())return;
  KD=document.createElement('div');KD.className='karte';const v=document.createElement('div');v.id='kartevorrat';document.body.appendChild(v);v.appendChild(KD);
  mapboxgl.accessToken=TOKEN;const o=stationen(s)[0];KSTIL=s.dataset.stil;
@@ -336,7 +400,7 @@ function karteBau(s){if(typeof mapboxgl==='undefined'||!mapboxgl.supported||!map
  if(!/mapbox\/standard/.test(KSTIL)&&!KM.getLayer('relief')){
   KM.addLayer({id:'relief',type:'hillshade',source:'dem',paint:{'hillshade-exaggeration':0.6,'hillshade-shadow-color':'rgba(25,30,40,0.75)','hillshade-highlight-color':'rgba(255,255,255,0.3)','hillshade-accent-color':'rgba(0,0,0,0.15)','hillshade-illumination-direction':315}},KM.getLayer('sat')?'sat':undefined)}KM.setFog({});
  // Standard-Stile: Strassen, Nummern und POI ausblenden, nur Ortsnamen und Gewässer bleiben (13.11.2026)
- ['showRoadsAndTransit','showRoadLabels','showPointOfInterestLabels','showTransitLabels','showPedestrianRoads','showAdminBoundaries'].forEach(k=>{try{KM.setConfigProperty('basemap',k,false)}catch(e){}});ueberlagerung(f[i]);grenzenEbene();satEbene();flussEbene();beschriftung()});
+ ['showRoadsAndTransit','showRoadLabels','showPointOfInterestLabels','showTransitLabels','showPedestrianRoads','showAdminBoundaries'].forEach(k=>{try{KM.setConfigProperty('basemap',k,false)}catch(e){}});ueberlagerung(f[i]);grenzenEbene();satEbene();flussEbene();linieEbene();beschriftung()});
  KM.once('load',()=>{beschriftung();vorladen()})}
 // Vorladen (13.11.2026): Solange keine Kartenfolie gezeigt wird, springt die unsichtbare Karte alle Stationen ab.
 // Die Kacheln liegen danach im Zwischenspeicher, die Flüge im Unterricht laden nicht mehr nach.
@@ -349,11 +413,11 @@ async function vorladen(){for(const s of f.filter(istKarte))for(const o of vorla
  KM.jumpTo({center:o.center,zoom:o.zoom,pitch:o.pitch||0,bearing:o.bearing||0});await Promise.race([new Promise(r=>KM.once('idle',r)),warte(15000)])}
  if(KM.getLayer('sat'))KM.setPaintProperty('sat','raster-opacity',0);
  if(abbruch||istKarte(f[i]))return;const o=stationen(f.find(istKarte))[0];KM.jumpTo({center:o.center,zoom:o.zoom,pitch:o.pitch||0,bearing:o.bearing||0});console.log('Karten vorgeladen')}
-function karteZeigen(s){if(!istKarte(s)){if(KM)KM.stop();return}abbruch=true;
+function karteZeigen(s){if(!istKarte(s)){if(KM){KM.stop();schieberWeg();punkteZeigen(null)}if(s&&s.classList.contains('bvfolie'))setTimeout(()=>{if(f[i]===s)schieberZeigen(s.querySelector('.bv'))},900);return}abbruch=true;
  const platz=s.querySelector('.kartenplatz');if(!KM){platz.textContent='Die Karte braucht Internet und WebGL.';return}
  if(KD.parentNode!==platz)platz.appendChild(KD);KM.resize();
  if(KSTIL!==s.dataset.stil){KSTIL=s.dataset.stil;KM.setStyle(KSTIL)}
- ueberlagerung(s);beschriftung();karteFlug(s,true)}
+ ueberlagerung(s);beschriftung();linieSichtbar(s);schieber(s);karteFlug(s,true)}
 const RICHT=[[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]];
 function neu(el){el.style.animation='none';el.offsetHeight;el.style.animation=''}
 function zeig(n){i=Math.max(0,Math.min(f.length-1,n));f.forEach((s,k)=>s.classList.toggle('an',k===i));if(typeof malen==='function')malen();
@@ -467,7 +531,7 @@ function laserLoop(){lraf=0;const t=performance.now(),aktiv=!!(zug&&zug.laser);L
  if(LZ.length||aktiv)lraf=requestAnimationFrame(laserLoop)}
 document.addEventListener('pointerdown',e=>{
  if(SW.classList.contains('offen')&&!e.target.closest('#stiftwahl,#werkzeug,#palette')){wahlZu();penZeit=Date.now();e.preventDefault();return}
- if(e.target.closest('#werkzeug,#stiftwahl,#palette,a,.vergleichknopf')||busy)return;
+ if(e.target.closest('#werkzeug,#stiftwahl,#palette,a,.vergleichknopf,.sgriff,.kpunkt,.kbox')||busy)return;
  const pen=e.pointerType==='pen';if(!pen&&!modus)return;e.preventDefault();if(pen)penZeit=Date.now();
  if(wz==='laser'){zug={laser:1};laserPunkt(e,1);return}
  if(KM&&istKarte(f[i]))KM.stop();
